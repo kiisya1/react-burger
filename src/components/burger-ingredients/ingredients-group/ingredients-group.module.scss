@@ -1,0 +1,14 @@
+.ingredients_group__list {
+	padding: 0 0 0 16px;
+	margin: 0 0 40px;
+	list-style: none;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	width: 100%;
+	gap: 24px;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}

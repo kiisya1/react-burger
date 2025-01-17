@@ -1,0 +1,10 @@
+.burger_constructor {
+	margin-bottom: 52px;
+
+	&__total {
+		display: flex;
+		justify-content: flex-end;
+		gap: 40px;
+		align-items: center;
+	}
+}
