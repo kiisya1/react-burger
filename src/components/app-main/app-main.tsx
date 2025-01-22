@@ -11,8 +11,12 @@ export const AppMain = (props: { ingredients: Ingredient[] }) => {
 				Соберите бургер
 			</h1>
 			<div className={`${styles.container} pl-5 pr-5`}>
-				<BurgerIngredients ingredients={props.ingredients} />
-				<BurgerConstructor ingredients={props.ingredients} />
+				{props.ingredients && props.ingredients?.length > 0 && (
+					<>
+						<BurgerIngredients ingredients={props.ingredients} />
+						<BurgerConstructor ingredients={props.ingredients} />
+					</>
+				)}
 			</div>
 		</main>
 	);

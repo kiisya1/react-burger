@@ -11,6 +11,7 @@ export const IngredientsGroup = (props: IngredientsGroupProps) => {
 				{props.ingredients.map((ingredient: Ingredient) => {
 					return (
 						<IngredientItem
+							setIngredient={props.setIngredient}
 							key={ingredient._id}
 							ingredient={ingredient}
 							count={1}

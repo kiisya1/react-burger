@@ -1,0 +1,29 @@
+.modal {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 1100;
+	width: calc(100% - 32px);
+	max-width: 720px;
+	height: auto;
+	background-color: var(--background);
+	border-radius: var(--common-border-radius-s);
+	border: 1px solid var(--colors-interface-accent);
+	box-shadow: 0 0 1px 0 #0000000A,
+				0 4px 8px 0 #0000000A,
+				0 16px 24px 0 #0000000A,
+				0 24px 32px 0 #0000000A;
+
+	&__header {
+		min-height: 64px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	&__button {
+		cursor: pointer;
+		margin-left: auto;
+	}
+}

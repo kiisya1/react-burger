@@ -1,0 +1,19 @@
+.ingredient_details {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+
+	&__info {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: flex;
+		gap: 20px;
+	}
+
+	&__info_item {
+		text-align: center;
+		min-width: 112px;
+	}
+}

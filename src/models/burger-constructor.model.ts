@@ -5,6 +5,7 @@ export interface BurgerConstructorProps {
 }
 
 export interface ConstructorItemProps {
+	id: string;
 	text: string;
 	thumbnail: string;
 	price: number;

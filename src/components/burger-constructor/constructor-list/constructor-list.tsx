@@ -6,28 +6,31 @@ import {
 import { ConstructorItem } from '../constructor-item/constructor-item';
 import { Ingredient } from '../../../models/ingredient.model';
 import styles from './constructor-list.module.scss';
+import { v4 as uuidv4 } from 'uuid';
+import { useMemo } from 'react';
 
 export const ConstructorList = (props: BurgerConstructorProps) => {
-	const resultItems: ConstructorItemProps[] =
-		convertIngredientsToConstructorItems(props.ingredients);
-	const bun: Ingredient | undefined = props.ingredients.find(
-		(item: Ingredient) => item.type === 'bun'
-	);
-	const start: ConstructorItemProps | undefined = convertStartAndEndItem(
-		bun,
-		'top'
-	);
-	const end: ConstructorItemProps | undefined = convertStartAndEndItem(
-		bun,
-		'bottom'
-	);
+	const resultItems: ConstructorItemProps[] = useMemo(() => {
+		return convertIngredientsToConstructorItems(props.ingredients);
+	}, [props.ingredients]);
+	const bun: Ingredient | undefined = useMemo(() => {
+		return props.ingredients.find((item: Ingredient) => item.type === 'bun');
+	}, [props.ingredients]);
+	const start: ConstructorItemProps | undefined = useMemo(() => {
+		return convertStartAndEndItem(bun, 'top');
+	}, [bun]);
+
+	const end: ConstructorItemProps | undefined = useMemo(() => {
+		return convertStartAndEndItem(bun, 'bottom');
+	}, [bun]);
+
 	return (
 		<div className='mb-10'>
 			{start && <ConstructorItem {...start} />}
 			<ul className={`${styles.constructor_list__list} custom-scroll`}>
-				{resultItems.map((item: ConstructorItemProps, index: number) => {
+				{resultItems.map((item: ConstructorItemProps) => {
 					return (
-						<li key={index} className={styles.constructor_list__item}>
+						<li key={item.id} className={styles.constructor_list__item}>
 							<ConstructorItem {...item} />
 						</li>
 					);
@@ -46,6 +49,7 @@ function convertStartAndEndItem(
 		return;
 	}
 	return {
+		id: uuidv4(),
 		text: bun.name,
 		price: bun.price,
 		thumbnail: bun.image,
@@ -60,6 +64,7 @@ function convertIngredientsToConstructorItems(
 	return ingredients
 		.filter((item: Ingredient) => item.type !== 'bun')
 		.map((ingredient: Ingredient) => ({
+			id: uuidv4(),
 			text: ingredient.name,
 			price: ingredient.price,
 			thumbnail: ingredient.image,
