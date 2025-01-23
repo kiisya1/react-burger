@@ -1,0 +1,21 @@
+.constructor_list {
+	&__list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		width: 100%;
+		height: calc(100vh - 560px);
+		overflow-y: scroll;
+	}
+
+	&__item {
+		margin-bottom: 16px;
+
+		:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
