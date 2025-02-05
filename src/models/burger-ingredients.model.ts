@@ -1,20 +1,13 @@
 import { Ingredient } from './ingredient.model';
+import React from 'react';
 
-export interface BurgerIngredientsProps {
+export interface IngredientsGroupProps {
 	ingredients: Ingredient[];
-}
-
-export interface IngredientsGroupProps extends BurgerIngredientsProps {
 	title?: string;
-	setIngredient: (value: Ingredient) => void;
+	listRef: React.RefObject<HTMLHeadingElement>;
 }
 
 export interface IngredientItemProps {
 	ingredient: Ingredient;
 	count?: number;
-	setIngredient: (value: Ingredient) => void;
-}
-
-export interface IngredientDetailsProps {
-	ingredient: Ingredient;
 }

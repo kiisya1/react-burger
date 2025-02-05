@@ -1,52 +1,35 @@
 import { AppHeader } from '../app-header/app-header';
 import styles from './app.module.scss';
 import { AppMain } from '../app-main/app-main';
-import React, { useEffect, useState } from 'react';
-import { Ingredient } from '../../models/ingredient.model';
-import { apiRoute } from '../../constants/api.constants';
-import { getIngredients } from '../../utils/burger-api';
+import React, { useEffect } from 'react';
 import { AppLoading } from '../app-loading/app-loading';
 import { AppError } from '../app-error/app-error';
+import { useAppDispatch, useAppSelector } from '../../utils/hooks';
+import { loadIngredients } from '../../services/ingredients/actions';
 
 export const App = () => {
-	const [ingredients, setIngredients]: [
-		Ingredient[] | null,
-		React.Dispatch<React.SetStateAction<Ingredient[] | null>>
-	] = useState<Ingredient[] | null>(null);
-	const [loading, setLoading]: [
-		boolean,
-		React.Dispatch<React.SetStateAction<boolean>>
-	] = useState(false);
-	const [error, setError]: [
-		string | null,
-		React.Dispatch<React.SetStateAction<string | null>>
-	] = useState<string | null>(null);
+	const dispatch = useAppDispatch();
+	const { ingredients, loading, error } = useAppSelector(
+		(state) => state.ingredients
+	);
 
 	useEffect(() => {
-		setError(null);
-		(async () => {
-			try {
-				setLoading(true);
-				const response = await getIngredients(apiRoute);
-				setIngredients(response.data as unknown as Ingredient[]);
-				setLoading(false);
-			} catch (error) {
-				setError((error as Error).message ?? 'unknown error');
-				setLoading(false);
-			}
-		})();
-	}, []);
+		dispatch(loadIngredients());
+	}, [dispatch]);
 
 	return (
 		<div className={styles.wrapper}>
 			<AppHeader />
 			{error ? (
-				<AppError error={error} />
+				<AppError />
 			) : loading ? (
 				<AppLoading />
+			) : ingredients.length === 0 ? (
+				<h2 className='text text_type_main-large mb-5 pl-5 pr-5'>
+					Нет доступных ингредиентов.
+				</h2>
 			) : (
-				ingredients &&
-				ingredients.length > 0 && <AppMain ingredients={ingredients} />
+				ingredients.length > 0 && <AppMain />
 			)}
 		</div>
 	);

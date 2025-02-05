@@ -1,9 +1,10 @@
 import styles from './app-main.module.scss';
 import { BurgerConstructor } from '../burger-constructor/burger-constructor';
 import { BurgerIngredients } from '../burger-ingredients/burger-ingredients';
-import { Ingredient } from '../../models/ingredient.model';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
-export const AppMain = (props: { ingredients: Ingredient[] }) => {
+export const AppMain = () => {
 	return (
 		<main className={`${styles.main} pt-10 pb-10`}>
 			<h1
@@ -11,12 +12,10 @@ export const AppMain = (props: { ingredients: Ingredient[] }) => {
 				Соберите бургер
 			</h1>
 			<div className={`${styles.container} pl-5 pr-5`}>
-				{props.ingredients && props.ingredients?.length > 0 && (
-					<>
-						<BurgerIngredients ingredients={props.ingredients} />
-						<BurgerConstructor ingredients={props.ingredients} />
-					</>
-				)}
+				<DndProvider backend={HTML5Backend}>
+					<BurgerIngredients />
+					<BurgerConstructor />
+				</DndProvider>
 			</div>
 		</main>
 	);

@@ -1,5 +1,5 @@
 export interface Ingredient {
-	_id?: string;
+	_id: string;
 	name: string;
 	type?: string;
 	proteins?: number;
@@ -10,5 +10,4 @@ export interface Ingredient {
 	image: string;
 	image_mobile?: string;
 	image_large?: string;
-	__v?: number;
 }

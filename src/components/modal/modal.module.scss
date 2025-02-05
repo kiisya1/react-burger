@@ -9,11 +9,9 @@
 	height: auto;
 	background-color: var(--background);
 	border-radius: var(--common-border-radius-s);
-	border: 1px solid var(--colors-interface-accent);
-	box-shadow: 0 0 1px 0 #0000000A,
-				0 4px 8px 0 #0000000A,
-				0 16px 24px 0 #0000000A,
-				0 24px 32px 0 #0000000A;
+	border: 1px solid rgba(76, 76, 255, 0.2);
+	box-shadow: 0 0 1px 0 #0000000a, 0 4px 8px 0 #0000000a,
+		0 16px 24px 0 #0000000a, 0 24px 32px 0 #0000000a;
 
 	&__header {
 		min-height: 64px;

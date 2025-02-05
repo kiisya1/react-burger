@@ -1,18 +1,19 @@
-import { Ingredient } from './ingredient.model';
+import { ConnectDropTarget } from 'react-dnd';
 
-export interface BurgerConstructorProps {
-	ingredients: Ingredient[];
-}
-
-export interface ConstructorItemProps {
+export interface ConstructorIngredient {
 	id: string;
 	text: string;
-	thumbnail: string;
 	price: number;
+	thumbnail: string;
+	ingredientId: string;
 	type?: ConstructorItemType;
 	isLocked?: boolean;
 	extraClass?: string;
-	handleClose?: () => void;
 }
 
 export type ConstructorItemType = 'top' | 'bottom';
+
+export interface ConstructorItemProps extends ConstructorIngredient {
+	dropRef?: ConnectDropTarget;
+	index?: number;
+}

@@ -1,26 +1,25 @@
 import { createPortal } from 'react-dom';
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { ModalOverlay } from '../modal-overlay/modal-overlay';
 import styles from './modal.module.scss';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { ModalProps } from '../../models/modal.model';
 
+const modalRoot = document.getElementById('modal-root');
+
 export const Modal = (props: ModalProps) => {
-	const onKeydown = useCallback(
-		(event: KeyboardEvent) => {
+	useEffect(() => {
+		const onKeydown = (event: KeyboardEvent) => {
 			if (event.code === 'Escape') {
 				props.onClose();
 			}
-		},
-		[props]
-	);
+		};
 
-	useEffect(() => {
 		window.addEventListener('keydown', onKeydown);
 		return () => {
 			window.removeEventListener('keydown', onKeydown);
 		};
-	}, [onKeydown]);
+	}, [props, props.onClose]);
 
 	return createPortal(
 		<>
@@ -37,6 +36,6 @@ export const Modal = (props: ModalProps) => {
 			</div>
 			<ModalOverlay onClick={props.onClose} />
 		</>,
-		document.body
+		modalRoot ?? document.body
 	);
 };
