@@ -1,4 +1,3 @@
-import { BurgerConstructorProps } from '../../models/burger-constructor.model';
 import {
 	Button,
 	CurrencyIcon,
@@ -6,39 +5,57 @@ import {
 import { ConstructorList } from './constructor-list/constructor-list';
 import styles from './burger-constructor.module.scss';
 import { Modal } from '../modal/modal';
-import React, { useCallback, useState } from 'react';
+import React, { SyntheticEvent, useCallback } from 'react';
 import { OrderDetails } from './order-details/order-details';
+import { useAppSelector, useAppDispatch } from '../../utils/hooks';
+import {
+	getOrderIngredients,
+	getOrderPrice,
+} from '../../services/burger-constructor/reducer';
+import { createOrder } from '../../services/order/actions';
+import { clearOrderNumber } from '../../services/order/reducer';
 
-export const BurgerConstructor = (props: BurgerConstructorProps) => {
-	const [modalOpen, setModalOpen]: [
-		boolean,
-		React.Dispatch<React.SetStateAction<boolean>>
-	] = useState(false);
+export const BurgerConstructor = () => {
+	const orderPrice = useAppSelector(getOrderPrice);
+	const orderIngredients: string[] | undefined =
+		useAppSelector(getOrderIngredients);
+	const { order, loading, error } = useAppSelector((state) => state.order);
+	const dispatch = useAppDispatch();
 
 	const closeModal = useCallback(() => {
-		setModalOpen(false);
-	}, []);
+		dispatch(clearOrderNumber());
+	}, [dispatch]);
 
-	const openModal = useCallback(() => {
-		setModalOpen(true);
-	}, []);
+	const onCreateOrderClick = useCallback(
+		(event: SyntheticEvent) => {
+			event.preventDefault();
+			orderIngredients && dispatch(createOrder(orderIngredients));
+		},
+		[dispatch, orderIngredients]
+	);
 
 	return (
 		<section className={`${styles.burger_constructor} pl-4`}>
-			<ConstructorList ingredients={props.ingredients} />
+			<ConstructorList />
 			<section className={`${styles.burger_constructor__total}`}>
 				<p className='text text_type_digits-medium'>
-					{'610'} <CurrencyIcon type='primary' />
+					{orderPrice} <CurrencyIcon type='primary' />
 				</p>
 				<Button
-					onClick={openModal}
+					onClick={onCreateOrderClick}
 					htmlType='button'
 					type='primary'
+					disabled={loading || !orderIngredients?.length}
 					size='large'>
 					Оформить заказ
 				</Button>
 			</section>
-			{modalOpen && (
+			{error && (
+				<p className='text text_type_digits-medium' style={{ color: 'red' }}>
+					`Во время оформления заказа произошла ошибка: ${error}.`
+				</p>
+			)}
+			{order && (
 				<Modal onClose={closeModal}>
 					<OrderDetails />
 				</Modal>

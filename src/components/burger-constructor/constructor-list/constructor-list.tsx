@@ -1,72 +1,105 @@
-import {
-	BurgerConstructorProps,
-	ConstructorItemProps,
-	ConstructorItemType,
-} from '../../../models/burger-constructor.model';
+import { ConstructorIngredient } from '../../../models/burger-constructor.model';
 import { ConstructorItem } from '../constructor-item/constructor-item';
-import { Ingredient } from '../../../models/ingredient.model';
 import styles from './constructor-list.module.scss';
-import { v4 as uuidv4 } from 'uuid';
-import { useMemo } from 'react';
+import { useAppSelector, useAppDispatch } from '../../../utils/hooks';
+import { useDrop } from 'react-dnd';
+import {
+	addBun,
+	addIngredient,
+} from '../../../services/burger-constructor/reducer';
+import { Ingredient } from '../../../models/ingredient.model';
 
-export const ConstructorList = (props: BurgerConstructorProps) => {
-	const resultItems: ConstructorItemProps[] = useMemo(() => {
-		return convertIngredientsToConstructorItems(props.ingredients);
-	}, [props.ingredients]);
-	const bun: Ingredient | undefined = useMemo(() => {
-		return props.ingredients.find((item: Ingredient) => item.type === 'bun');
-	}, [props.ingredients]);
-	const start: ConstructorItemProps | undefined = useMemo(() => {
-		return convertStartAndEndItem(bun, 'top');
-	}, [bun]);
+export const ConstructorList = () => {
+	const { bun, ingredients } = useAppSelector((state) => state.burger);
+	const dispatch = useAppDispatch();
+	const [{ isHoverIngredient }, ingredientTarget] = useDrop({
+		accept: 'ingredient',
+		drop(item: Ingredient) {
+			dispatch(addIngredient(item));
+		},
+		collect: (monitor) => ({
+			isHoverIngredient: monitor.isOver(),
+		}),
+	});
 
-	const end: ConstructorItemProps | undefined = useMemo(() => {
-		return convertStartAndEndItem(bun, 'bottom');
-	}, [bun]);
+	const [{ isHoverBunTop }, bunTargetTop] = useDrop({
+		accept: 'bun',
+		drop(item: Ingredient) {
+			dispatch(addBun(item));
+		},
+		collect: (monitor) => ({
+			isHoverBunTop: monitor.isOver(),
+		}),
+	});
+
+	const [{ isHoverBunBottom }, bunTargetBottom] = useDrop({
+		accept: 'bun',
+		drop(item: Ingredient) {
+			dispatch(addBun(item));
+		},
+		collect: (monitor) => ({
+			isHoverBunBottom: monitor.isOver(),
+		}),
+	});
+
+	const borderColor =
+		isHoverBunBottom || isHoverBunTop ? 'rgba(76, 76, 255, 0.8)' : '#2f2f37';
+
+	const ingredientBorderColor = isHoverIngredient
+		? 'rgba(76, 76, 255, 0.8)'
+		: '#2f2f37';
 
 	return (
 		<div className='mb-10'>
-			{start && <ConstructorItem {...start} />}
-			<ul className={`${styles.constructor_list__list} custom-scroll`}>
-				{resultItems.map((item: ConstructorItemProps) => {
-					return (
-						<li key={item.id} className={styles.constructor_list__item}>
-							<ConstructorItem {...item} />
-						</li>
-					);
-				})}
+			{bun ? (
+				<ConstructorItem
+					dropRef={bunTargetTop}
+					isLocked={true}
+					type='top'
+					{...bun}
+				/>
+			) : (
+				<div
+					ref={bunTargetTop}
+					style={{ borderColor }}
+					className={`${styles.constructor_list__bun} ${styles.top} ${styles.constructor_list__item} text text_type_main-default`}>
+					Выберите булки
+				</div>
+			)}
+			<ul
+				ref={ingredientTarget}
+				className={`${styles.constructor_list__list} custom-scroll`}>
+				{ingredients.length ? (
+					ingredients.map((item: ConstructorIngredient, index: number) => {
+						return (
+							<li key={item.id} className={styles.constructor_list__item}>
+								<ConstructorItem index={index} {...item} />
+							</li>
+						);
+					})
+				) : (
+					<li
+						style={{ borderColor: ingredientBorderColor }}
+						className={`${styles.constructor_list__bun} ${styles.constructor_list__item} text text_type_main-default`}>
+						Выберите начинку
+					</li>
+				)}
 			</ul>
-			{end && <ConstructorItem {...end} />}
+			{bun ? (
+				<ConstructorItem
+					dropRef={bunTargetBottom}
+					isLocked={true}
+					type='bottom'
+					{...bun}
+				/>
+			) : (
+				<div
+					ref={bunTargetBottom}
+					style={{ borderColor }}
+					className={`${styles.constructor_list__bun} ${styles.bottom} ${styles.constructor_list__item} text text_type_main-default`}>
+					Выберите булки
+				</div>
+			)}
 		</div>
 	);
 };
-
-function convertStartAndEndItem(
-	bun: Ingredient | undefined,
-	type: ConstructorItemType
-): ConstructorItemProps | undefined {
-	if (!bun) {
-		return;
-	}
-	return {
-		id: uuidv4(),
-		text: bun.name,
-		price: bun.price,
-		thumbnail: bun.image,
-		isLocked: true,
-		type: type,
-	};
-}
-
-function convertIngredientsToConstructorItems(
-	ingredients: Ingredient[]
-): ConstructorItemProps[] {
-	return ingredients
-		.filter((item: Ingredient) => item.type !== 'bun')
-		.map((ingredient: Ingredient) => ({
-			id: uuidv4(),
-			text: ingredient.name,
-			price: ingredient.price,
-			thumbnail: ingredient.image,
-		}));
-}

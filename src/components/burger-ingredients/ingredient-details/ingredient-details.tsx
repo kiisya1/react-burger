@@ -1,22 +1,26 @@
-import { IngredientDetailsProps } from '../../../models/burger-ingredients.model';
 import styles from './ingredient-details.module.scss';
+import { Ingredient } from '../../../models/ingredient.model';
+import { useAppSelector } from '../../../utils/hooks';
 
-export const IngredientDetails = (props: IngredientDetailsProps) => {
+export const IngredientDetails = () => {
+	const ingredient: Ingredient | null = useAppSelector(
+		(state) => state.currentIngredient.ingredient
+	);
 	return (
 		<section className={`${styles.ingredient_details} mb-5 pl-15 pr-15`}>
 			<img
 				className='mb-4'
-				src={props.ingredient.image_large}
-				alt={props.ingredient.name}
+				src={ingredient?.image_large}
+				alt={ingredient?.name}
 			/>
-			<p className='text text_type_main-medium mb-8'>{props.ingredient.name}</p>
+			<p className='text text_type_main-medium mb-8'>{ingredient?.name}</p>
 			<ul className={styles.ingredient_details__info}>
 				<li className={styles.ingredient_details__info_item}>
 					<p className='text_type_main-default text_color_inactive mb-2'>
 						Калории,ккал
 					</p>
 					<p className='text text_type_digits-default text_color_inactive'>
-						{props.ingredient.calories}
+						{ingredient?.calories}
 					</p>
 				</li>
 				<li className={styles.ingredient_details__info_item}>
@@ -24,7 +28,7 @@ export const IngredientDetails = (props: IngredientDetailsProps) => {
 						Белки, г
 					</p>
 					<p className='text text_type_digits-default text_color_inactive'>
-						{props.ingredient.proteins}
+						{ingredient?.proteins}
 					</p>
 				</li>
 				<li className={styles.ingredient_details__info_item}>
@@ -32,7 +36,7 @@ export const IngredientDetails = (props: IngredientDetailsProps) => {
 						Жиры, г
 					</p>
 					<p className='text text_type_digits-default text_color_inactive'>
-						{props.ingredient.fat}
+						{ingredient?.fat}
 					</p>
 				</li>
 				<li className={styles.ingredient_details__info_item}>
@@ -40,7 +44,7 @@ export const IngredientDetails = (props: IngredientDetailsProps) => {
 						Углеводы, г
 					</p>
 					<p className='text text_type_digits-default text_color_inactive'>
-						{props.ingredient.carbohydrates}
+						{ingredient?.carbohydrates}
 					</p>
 				</li>
 			</ul>
