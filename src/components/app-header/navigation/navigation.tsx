@@ -1,7 +1,3 @@
-import {
-	BurgerIcon,
-	ListIcon,
-} from '@ya.praktikum/react-developer-burger-ui-components';
 import { NavigationItem } from '../navigation-item/navigation-item';
 import styles from './navigation.module.scss';
 
@@ -10,14 +6,14 @@ export const Navigation = () => {
 		<nav className={styles.navigation}>
 			<ul className={styles.navigation__list}>
 				<li className={styles.navigation__item}>
-					<NavigationItem title='Конструктор'>
-						<BurgerIcon type='primary' />
-					</NavigationItem>
+					<NavigationItem title='Конструктор' link='/' icon='BurgerIcon' />
 				</li>
 				<li className={styles.navigation__item}>
-					<NavigationItem title='Лента заказов' inactive={true}>
-						<ListIcon type='secondary' />
-					</NavigationItem>
+					<NavigationItem
+						title='Лента заказов'
+						icon='ListIcon'
+						link='/orders-list'
+					/>
 				</li>
 			</ul>
 		</nav>

@@ -14,9 +14,14 @@ import {
 } from '../../services/burger-constructor/reducer';
 import { createOrder } from '../../services/order/actions';
 import { clearOrderNumber } from '../../services/order/reducer';
+import { getUser } from '../../services/user/reducer';
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const BurgerConstructor = () => {
 	const orderPrice = useAppSelector(getOrderPrice);
+	const user = useAppSelector(getUser);
+	const navigate = useNavigate();
+	const location = useLocation();
 	const orderIngredients: string[] | undefined =
 		useAppSelector(getOrderIngredients);
 	const { order, loading, error } = useAppSelector((state) => state.order);
@@ -28,10 +33,14 @@ export const BurgerConstructor = () => {
 
 	const onCreateOrderClick = useCallback(
 		(event: SyntheticEvent) => {
-			event.preventDefault();
-			orderIngredients && dispatch(createOrder(orderIngredients));
+			if (!user) {
+				navigate('/login', { state: { from: location } });
+			} else {
+				event.preventDefault();
+				orderIngredients && dispatch(createOrder(orderIngredients));
+			}
 		},
-		[dispatch, orderIngredients]
+		[dispatch, location, navigate, orderIngredients, user]
 	);
 
 	return (
@@ -50,12 +59,7 @@ export const BurgerConstructor = () => {
 					Оформить заказ
 				</Button>
 			</section>
-			{error && (
-				<p className='text text_type_digits-medium' style={{ color: 'red' }}>
-					`Во время оформления заказа произошла ошибка: ${error}.`
-				</p>
-			)}
-			{order && (
+			{(loading || order || error) && (
 				<Modal onClose={closeModal}>
 					<OrderDetails />
 				</Modal>

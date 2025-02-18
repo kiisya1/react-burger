@@ -57,6 +57,7 @@ export const ConstructorList = () => {
 					isLocked={true}
 					type='top'
 					{...bun}
+					text={`${bun.text} (верх)`}
 				/>
 			) : (
 				<div
@@ -91,6 +92,7 @@ export const ConstructorList = () => {
 					isLocked={true}
 					type='bottom'
 					{...bun}
+					text={`${bun.text} (низ)`}
 				/>
 			) : (
 				<div
