@@ -1,11 +1,22 @@
 import styles from './ingredient-details.module.scss';
 import { Ingredient } from '../../../models/ingredient.model';
 import { useAppSelector } from '../../../utils/hooks';
+import { useParams } from 'react-router-dom';
 
 export const IngredientDetails = () => {
-	const ingredient: Ingredient | null = useAppSelector(
-		(state) => state.currentIngredient.ingredient
-	);
+	const { id } = useParams<'id'>();
+	const ingredient: Ingredient | null =
+		useAppSelector((state) =>
+			state.ingredients.ingredients.find((item: Ingredient) => item._id === id)
+		) ?? null;
+
+	if (!ingredient)
+		return (
+			<p className='text text_type_main-medium text_color_inactive'>
+				Ингредиент не найден
+			</p>
+		);
+
 	return (
 		<section className={`${styles.ingredient_details} mb-5 pl-15 pr-15`}>
 			<img

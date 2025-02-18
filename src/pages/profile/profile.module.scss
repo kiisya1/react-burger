@@ -1,0 +1,34 @@
+.wrapper {
+	padding: 120px 20px 0 20px;
+	width: 100%;
+	max-width: 1280px;
+	margin-left: auto;
+	margin-right: auto;
+	display: grid;
+	grid-template-columns: 320px 1fr;
+	gap: 60px;
+}
+
+.navigation {
+	list-style: none;
+	margin: 0 0 80px 0;
+	padding: 0;
+}
+
+.link {
+	padding: 17px 0;
+	color: var(--text-inactive-color);
+
+	a {
+		text-decoration: none;
+		color: var(--text-inactive-color);
+	}
+}
+
+.active {
+	color: var(--text-primary-color);
+}
+
+.exit {
+	cursor: pointer;
+}

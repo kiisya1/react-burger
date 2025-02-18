@@ -1,11 +1,5 @@
 .ingredient_item {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	width: calc((100% - 24px) / 2);
-	text-align: center;
+	width: calc(50% - 12px);
 
 	&__image {
 		height: 120px;
@@ -16,5 +10,17 @@
 		display: flex;
 		gap: 8px;
 		align-items: center;
+	}
+
+	&__link {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+		text-align: center;
+		color: var(--text-primary-color);
+		text-decoration: none;
 	}
 }

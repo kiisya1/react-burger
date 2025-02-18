@@ -1,35 +1,81 @@
 import { AppHeader } from '../app-header/app-header';
 import styles from './app.module.scss';
-import { AppMain } from '../app-main/app-main';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import {
+	Home,
+	NotFound,
+	Login,
+	ForgotPassword,
+	Register,
+	Profile,
+	ResetPassword,
+	User,
+	Orders,
+	Ingredient,
+} from '../../pages';
+import { IngredientDetails } from '../burger-ingredients/ingredient-details/ingredient-details';
 import React, { useEffect } from 'react';
-import { AppLoading } from '../app-loading/app-loading';
-import { AppError } from '../app-error/app-error';
-import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { loadIngredients } from '../../services/ingredients/actions';
+import { useAppDispatch } from '../../utils/hooks';
+import { Modal } from '../modal/modal';
+import { checkUserAuth } from '../../services/user/actions';
+import { OnlyAuth, OnlyUnAuth } from '../protected-route/protected-route';
 
 export const App = () => {
 	const dispatch = useAppDispatch();
-	const { ingredients, loading, error } = useAppSelector(
-		(state) => state.ingredients
-	);
+	const navigate = useNavigate();
+	const location = useLocation();
+	const state = location.state as { backgroundLocation?: Location };
 
 	useEffect(() => {
 		dispatch(loadIngredients());
+		dispatch(checkUserAuth());
 	}, [dispatch]);
+
+	const closeModal = () => {
+		navigate(-1);
+	};
 
 	return (
 		<div className={styles.wrapper}>
 			<AppHeader />
-			{error ? (
-				<AppError />
-			) : loading ? (
-				<AppLoading />
-			) : ingredients.length === 0 ? (
-				<h2 className='text text_type_main-large mb-5 pl-5 pr-5'>
-					Нет доступных ингредиентов.
-				</h2>
-			) : (
-				ingredients.length > 0 && <AppMain />
+			<Routes location={state?.backgroundLocation || location}>
+				<Route path='/' element={<Home />} />
+				<Route path='/login' element={<OnlyUnAuth component={<Login />} />} />
+				<Route
+					path='/register'
+					element={<OnlyUnAuth component={<Register />} />}
+				/>
+				<Route
+					path='/forgot-password'
+					element={<OnlyUnAuth component={<ForgotPassword />} />}
+				/>
+				<Route
+					path='/reset-password'
+					element={<OnlyUnAuth component={<ResetPassword />} />}
+				/>
+				<Route path='/profile' element={<OnlyAuth component={<Profile />} />}>
+					<Route index element={<OnlyAuth component={<User />} />} />
+					<Route path='orders' element={<OnlyAuth component={<Orders />} />} />
+				</Route>
+				<Route path='/ingredients/:id' element={<Ingredient />} />
+				<Route path='*' element={<NotFound />} />
+			</Routes>
+
+			{state?.backgroundLocation && (
+				<Routes>
+					<Route
+						path='/ingredients/:id'
+						element={
+							<Modal
+								onClose={closeModal}
+								title='Детали ингредиента'
+								titleStyle='text_type_main-large'>
+								<IngredientDetails />
+							</Modal>
+						}
+					/>
+				</Routes>
 			)}
 		</div>
 	);

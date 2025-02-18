@@ -3,10 +3,7 @@ import { Ingredient } from '../../models/ingredient.model';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { IngredientsGroup } from './ingredients-group/ingredients-group';
-import { Modal } from '../modal/modal';
-import { IngredientDetails } from './ingredient-details/ingredient-details';
-import { useAppSelector, useAppDispatch } from '../../utils/hooks';
-import { clearCurrentIngredient } from '../../services/current-ingredient/reducer';
+import { useAppSelector } from '../../utils/hooks';
 
 export const BurgerIngredients = () => {
 	const tabsRef = useRef<HTMLDivElement>(null);
@@ -16,10 +13,6 @@ export const BurgerIngredients = () => {
 	const ingredients: Ingredient[] = useAppSelector(
 		(state) => state.ingredients.ingredients
 	);
-	const currentIngredient: Ingredient | null = useAppSelector(
-		(state) => state.currentIngredient.ingredient
-	);
-	const dispatch = useAppDispatch();
 	const [currentTab, setCurrentTab] = useState('buns');
 
 	const buns: Ingredient[] = useMemo(() => {
@@ -32,10 +25,6 @@ export const BurgerIngredients = () => {
 	const sauces: Ingredient[] = useMemo(() => {
 		return ingredients?.filter((item: Ingredient) => item.type === 'sauce');
 	}, [ingredients]);
-
-	const clearIngredient = useCallback(() => {
-		dispatch(clearCurrentIngredient());
-	}, [dispatch]);
 
 	const scrollOnClick = useCallback((tab: string) => {
 		switch (tab) {
@@ -136,14 +125,6 @@ export const BurgerIngredients = () => {
 					title='Начинки'
 				/>
 			</div>
-			{currentIngredient && (
-				<Modal
-					onClose={clearIngredient}
-					title='Детали ингредиента'
-					titleStyle='text_type_main-large'>
-					<IngredientDetails />
-				</Modal>
-			)}
 		</section>
 	);
 };
