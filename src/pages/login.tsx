@@ -2,16 +2,23 @@ import {
 	Button,
 	Input,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import React, { SyntheticEvent, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styles from './pages.module.scss';
 import { useAppDispatch } from '../utils/hooks';
 import { login } from '../services/user/actions';
 
-export const Login = () => {
+type TLoginFormState = {
+	email: string;
+	password: string;
+};
+
+type TFormErrorState = { [field in keyof TLoginFormState]: boolean };
+
+export const Login = (): React.JSX.Element => {
 	const dispatch = useAppDispatch();
 	const location = useLocation();
-	const [state, setState] = useState({
+	const [state, setState] = useState<TLoginFormState>({
 		email: '',
 		password: '',
 	});
@@ -20,7 +27,7 @@ export const Login = () => {
 		setIsHidden(!isHidden);
 	}, [isHidden]);
 
-	const [errorState, setErrorState] = useState({
+	const [errorState, setErrorState] = useState<TFormErrorState>({
 		password: false,
 		email: false,
 	});
@@ -40,7 +47,7 @@ export const Login = () => {
 	);
 
 	const onSubmit = useCallback(
-		(e: SyntheticEvent) => {
+		(e: React.FormEvent<HTMLFormElement>): void => {
 			e.preventDefault();
 			if (state.password && state.email) {
 				dispatch(login(state));

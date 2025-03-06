@@ -1,48 +1,60 @@
 import styles from './burger-ingredients.module.scss';
-import { Ingredient } from '../../models/ingredient.model';
+import { TIngredient, IngredientType } from '../../models/ingredient.model';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { IngredientsGroup } from './ingredients-group/ingredients-group';
 import { useAppSelector } from '../../utils/hooks';
 
-export const BurgerIngredients = () => {
+enum TabType {
+	BUNS = 'buns',
+	SAUCES = 'sauces',
+	MAINS = 'mains',
+}
+
+export const BurgerIngredients = (): React.JSX.Element => {
 	const tabsRef = useRef<HTMLDivElement>(null);
 	const bunsRef = useRef<HTMLHeadingElement>(null);
 	const ingredientsRef = useRef<HTMLHeadingElement>(null);
 	const saucesRef = useRef<HTMLHeadingElement>(null);
-	const ingredients: Ingredient[] = useAppSelector(
+	const ingredients: TIngredient[] = useAppSelector(
 		(state) => state.ingredients.ingredients
 	);
-	const [currentTab, setCurrentTab] = useState('buns');
+	const [currentTab, setCurrentTab] = useState<TabType>(TabType.BUNS);
 
-	const buns: Ingredient[] = useMemo(() => {
-		return ingredients?.filter((item: Ingredient) => item.type === 'bun');
+	const buns: TIngredient[] = useMemo(() => {
+		return ingredients?.filter(
+			(item: TIngredient) => item.type === IngredientType.BUN
+		);
 	}, [ingredients]);
-	const mains: Ingredient[] = useMemo(() => {
-		return ingredients?.filter((item: Ingredient) => item.type === 'main');
+	const mains: TIngredient[] = useMemo(() => {
+		return ingredients?.filter(
+			(item: TIngredient) => item.type === IngredientType.MAIN
+		);
 	}, [ingredients]);
 
-	const sauces: Ingredient[] = useMemo(() => {
-		return ingredients?.filter((item: Ingredient) => item.type === 'sauce');
+	const sauces: TIngredient[] = useMemo(() => {
+		return ingredients?.filter(
+			(item: TIngredient) => item.type === IngredientType.SAUCE
+		);
 	}, [ingredients]);
 
-	const scrollOnClick = useCallback((tab: string) => {
+	const scrollOnClick = useCallback((tab: string): void => {
 		switch (tab) {
-			case 'buns': {
+			case TabType.BUNS: {
 				bunsRef?.current?.scrollIntoView({
 					behavior: 'smooth',
 					block: 'start',
 				});
 				break;
 			}
-			case 'mains': {
+			case TabType.MAINS: {
 				ingredientsRef?.current?.scrollIntoView({
 					behavior: 'smooth',
 					block: 'start',
 				});
 				break;
 			}
-			case 'sauces': {
+			case TabType.SAUCES: {
 				saucesRef?.current?.scrollIntoView({
 					behavior: 'smooth',
 					block: 'start',
@@ -52,7 +64,7 @@ export const BurgerIngredients = () => {
 		}
 	}, []);
 
-	const handleScroll = () => {
+	const handleScroll = (): void => {
 		const tabs: DOMRect | undefined = tabsRef.current?.getBoundingClientRect();
 
 		const ing: DOMRect | undefined =
@@ -74,15 +86,15 @@ export const BurgerIngredients = () => {
 
 		switch (min) {
 			case diffIng: {
-				setCurrentTab('mains');
+				setCurrentTab(TabType.MAINS);
 				break;
 			}
 			case diffBuns: {
-				setCurrentTab('buns');
+				setCurrentTab(TabType.BUNS);
 				break;
 			}
 			case diffSauce: {
-				setCurrentTab('sauces');
+				setCurrentTab(TabType.SAUCES);
 				break;
 			}
 		}
@@ -92,20 +104,20 @@ export const BurgerIngredients = () => {
 		<section className={styles.burger_ingredients}>
 			<div ref={tabsRef} className={`${styles.burger_ingredients__tabs} mb-10`}>
 				<Tab
-					value='buns'
-					active={currentTab === 'buns'}
+					value={TabType.BUNS}
+					active={currentTab === TabType.BUNS}
 					onClick={scrollOnClick}>
 					Булки
 				</Tab>
 				<Tab
-					value='sauces'
-					active={currentTab === 'sauces'}
+					value={TabType.SAUCES}
+					active={currentTab === TabType.SAUCES}
 					onClick={scrollOnClick}>
 					Соусы
 				</Tab>
 				<Tab
-					value='mains'
-					active={currentTab === 'mains'}
+					value={TabType.MAINS}
+					active={currentTab === TabType.MAINS}
 					onClick={scrollOnClick}>
 					Начинки
 				</Tab>

@@ -1,8 +1,11 @@
 import styles from './app-error.module.scss';
 import { useAppSelector } from '../../utils/hooks';
+import React from 'react';
 
-export const AppError = () => {
-	const error = useAppSelector((state) => state.ingredients.error);
+export const AppError = (): React.JSX.Element => {
+	const error: string | null = useAppSelector(
+		(state) => state.ingredients.error
+	);
 	return (
 		<div className={`${styles.error} text text_type_main-medium mt-10`}>
 			<svg

@@ -1,43 +1,68 @@
-import { ConstructorIngredient } from '../../../models/burger-constructor.model';
+import { TConstructorIngredient } from '../../../models/constructor-ingredient.model';
 import { ConstructorItem } from '../constructor-item/constructor-item';
 import styles from './constructor-list.module.scss';
 import { useAppSelector, useAppDispatch } from '../../../utils/hooks';
-import { useDrop } from 'react-dnd';
+import { DropTargetMonitor, useDrop } from 'react-dnd';
 import {
 	addBun,
 	addIngredient,
 } from '../../../services/burger-constructor/reducer';
-import { Ingredient } from '../../../models/ingredient.model';
+import { TIngredient } from '../../../models/ingredient.model';
+import React from 'react';
 
-export const ConstructorList = () => {
+type TDropCollectedPropsIngredient = {
+	isHoverIngredient: boolean;
+};
+
+type TDropCollectedPropsBunTop = {
+	isHoverBunTop: boolean;
+};
+
+type TDropCollectedPropsBunBottom = {
+	isHoverBunBottom: boolean;
+};
+
+export const ConstructorList = (): React.JSX.Element => {
 	const { bun, ingredients } = useAppSelector((state) => state.burger);
 	const dispatch = useAppDispatch();
-	const [{ isHoverIngredient }, ingredientTarget] = useDrop({
+	const [{ isHoverIngredient }, ingredientTarget] = useDrop<
+		TIngredient,
+		unknown,
+		TDropCollectedPropsIngredient
+	>({
 		accept: 'ingredient',
-		drop(item: Ingredient) {
+		drop(item: TIngredient) {
 			dispatch(addIngredient(item));
 		},
-		collect: (monitor) => ({
+		collect: (monitor: DropTargetMonitor<TIngredient, unknown>) => ({
 			isHoverIngredient: monitor.isOver(),
 		}),
 	});
 
-	const [{ isHoverBunTop }, bunTargetTop] = useDrop({
+	const [{ isHoverBunTop }, bunTargetTop] = useDrop<
+		TIngredient,
+		unknown,
+		TDropCollectedPropsBunTop
+	>({
 		accept: 'bun',
-		drop(item: Ingredient) {
+		drop(item: TIngredient) {
 			dispatch(addBun(item));
 		},
-		collect: (monitor) => ({
+		collect: (monitor: DropTargetMonitor<TIngredient, unknown>) => ({
 			isHoverBunTop: monitor.isOver(),
 		}),
 	});
 
-	const [{ isHoverBunBottom }, bunTargetBottom] = useDrop({
+	const [{ isHoverBunBottom }, bunTargetBottom] = useDrop<
+		TIngredient,
+		unknown,
+		TDropCollectedPropsBunBottom
+	>({
 		accept: 'bun',
-		drop(item: Ingredient) {
+		drop(item: TIngredient) {
 			dispatch(addBun(item));
 		},
-		collect: (monitor) => ({
+		collect: (monitor: DropTargetMonitor<TIngredient, unknown>) => ({
 			isHoverBunBottom: monitor.isOver(),
 		}),
 	});
@@ -71,7 +96,7 @@ export const ConstructorList = () => {
 				ref={ingredientTarget}
 				className={`${styles.constructor_list__list} custom-scroll`}>
 				{ingredients.length ? (
-					ingredients.map((item: ConstructorIngredient, index: number) => {
+					ingredients.map((item: TConstructorIngredient, index: number) => {
 						return (
 							<li key={item.id} className={styles.constructor_list__item}>
 								<ConstructorItem index={index} {...item} />

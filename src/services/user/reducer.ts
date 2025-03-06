@@ -1,9 +1,13 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+	ActionReducerMapBuilder,
+	createSlice,
+	PayloadAction,
+} from '@reduxjs/toolkit';
 import { checkUserAuth, login, logout, register, updateUser } from './actions';
-import { User } from '../../models/user.model';
+import { TUser } from '../../models/user.model';
 
 type UserState = {
-	user: User | null;
+	user: TUser | null;
 	isAuthChecked: boolean;
 	isUpdated: boolean;
 	isUpdating: boolean;
@@ -25,20 +29,17 @@ export const userSlice = createSlice({
 		setIsAuthChecked: (state, action: PayloadAction<boolean>) => {
 			state.isAuthChecked = action.payload;
 		},
-		setUser: (state, action: PayloadAction<User | null>) => {
-			state.user = action.payload;
-		},
 		setUserIsUpdated: (state, action: PayloadAction<boolean>) => {
 			state.isUpdated = action.payload;
 		},
 	},
 	selectors: {
-		getIsAuthChecked: (state) => state.isAuthChecked,
-		getUser: (state) => state.user,
-		getUserIsUpdated: (state) => state.isUpdated,
-		getUserIsUpdating: (state) => state.isUpdating,
+		getIsAuthChecked: (state: UserState) => state.isAuthChecked,
+		getUser: (state): TUser | null => state.user,
+		getUserIsUpdated: (state: UserState) => state.isUpdated,
+		getUserIsUpdating: (state: UserState) => state.isUpdating,
 	},
-	extraReducers: (builder) => {
+	extraReducers: (builder: ActionReducerMapBuilder<UserState>) => {
 		builder
 			.addCase(login.fulfilled, (state, action) => {
 				state.user = action.payload;
@@ -51,7 +52,7 @@ export const userSlice = createSlice({
 			.addCase(logout.fulfilled, (state) => {
 				state.user = null;
 			})
-			.addCase(updateUser.fulfilled, (state, action) => {
+			.addCase(updateUser.fulfilled, (state: UserState, action) => {
 				state.user = action.payload;
 				state.isUpdating = false;
 				state.isUpdated = true;
@@ -62,13 +63,10 @@ export const userSlice = createSlice({
 			.addCase(updateUser.rejected, (state) => {
 				state.isUpdating = false;
 			})
-			.addCase(
-				checkUserAuth.fulfilled,
-				(state, action: PayloadAction<User>) => {
-					state.user = action.payload;
-					state.isAuthChecked = true;
-				}
-			)
+			.addCase(checkUserAuth.fulfilled, (state, action) => {
+				state.user = action.payload;
+				state.isAuthChecked = true;
+			})
 			.addCase(checkUserAuth.rejected, (state) => {
 				state.user = null;
 				state.isAuthChecked = true;
@@ -76,8 +74,7 @@ export const userSlice = createSlice({
 	},
 });
 
-export const { setIsAuthChecked, setUser, setUserIsUpdated } =
-	userSlice.actions;
+export const { setIsAuthChecked, setUserIsUpdated } = userSlice.actions;
 export const {
 	getIsAuthChecked,
 	getUser,

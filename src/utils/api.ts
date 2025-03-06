@@ -10,17 +10,26 @@ import {
 	tokenUrl,
 	userUrl,
 } from '../constants/api.constants';
-import { UserWithPassword } from '../models/user.model';
+import { IUserWithPassword, TUser } from '../models/user.model';
+import {
+	TForgotPasswordBody,
+	TTokenBody,
+	TResetPasswordBody,
+	TResponse,
+	TUserResponse,
+	TIngredientsResponse,
+	TOrderResponse,
+} from '../models/api.model';
 
-const checkResponse = async (res: Response) => {
+const checkResponse = async <T>(res: Response): Promise<T> => {
 	return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 };
 
-const request = async (url: string, options?: RequestInit) => {
-	return fetch(`${baseUrl}${url}`, options).then(checkResponse);
+const request = async <T>(url: string, options?: RequestInit): Promise<T> => {
+	return fetch(`${baseUrl}${url}`, options).then(checkResponse<T>);
 };
 
-const postRequest = async (url: string, body: any) => {
+const postRequest = async <T, R>(url: string, body: R): Promise<T> => {
 	const options = {
 		method: 'POST',
 		headers: {
@@ -30,18 +39,20 @@ const postRequest = async (url: string, body: any) => {
 			...body,
 		}),
 	};
-	return request(url, options);
+	return request<T>(url, options);
 };
 
-const refreshToken = async () => {
+const refreshToken = async (): Promise<Omit<TUserResponse, 'user'>> => {
 	const token = localStorage.getItem('refreshToken');
 	try {
-		return postRequest(tokenUrl, { token }).then((refreshData) => {
-			if (refreshData.success) {
+		return postRequest<Omit<TUserResponse, 'user'>, TTokenBody>(tokenUrl, {
+			token,
+		}).then((refreshData: Omit<TUserResponse, 'user'>) => {
+			refreshData.success &&
 				localStorage.setItem('refreshToken', refreshData.refreshToken);
+			refreshData.success &&
 				localStorage.setItem('accessToken', refreshData.accessToken);
-				return refreshData;
-			}
+			return refreshData;
 		});
 	} catch (err) {
 		localStorage.removeItem('refreshToken');
@@ -50,7 +61,7 @@ const refreshToken = async () => {
 	}
 };
 
-const setTokens = async (data: any) => {
+const setTokens = async (data: TUserResponse) => {
 	if (!data.success) {
 		return Promise.reject(data);
 	}
@@ -59,28 +70,35 @@ const setTokens = async (data: any) => {
 	return data;
 };
 
-const fetchWithRefresh = async (url: string, options: RequestInit) => {
+const fetchWithRefresh = async <T>(
+	url: string,
+	options: RequestInit
+): Promise<T> => {
 	try {
-		return await request(url, options);
+		return await request<T>(url, options);
 	} catch (err) {
 		if ((err as Error).message === 'jwt expired') {
-			const refreshData = await refreshToken();
-			options.headers = {
-				...options.headers,
-				Authorization: refreshData.accessToken,
-			};
-			return await request(url, options);
+			const refreshData: Omit<TUserResponse, 'user'> = await refreshToken();
+			if (refreshData && refreshData.accessToken) {
+				options.headers = {
+					...options.headers,
+					Authorization: refreshData.accessToken,
+				};
+				return await request<T>(url, options);
+			} else {
+				return Promise.reject(err);
+			}
 		} else {
 			return Promise.reject(err);
 		}
 	}
 };
 
-const getIngredients = () => {
-	return request(ingredientsUrl);
+const getIngredients = (): Promise<TIngredientsResponse> => {
+	return request<TIngredientsResponse>(ingredientsUrl);
 };
 
-const addOrder = async (ingredients: string[]) => {
+const addOrder = async (ingredients: string[]): Promise<TOrderResponse> => {
 	const accessToken = localStorage.getItem('accessToken');
 	if (accessToken) {
 		const options: RequestInit = {
@@ -93,23 +111,27 @@ const addOrder = async (ingredients: string[]) => {
 				ingredients: ingredients,
 			}),
 		};
-		return fetchWithRefresh(orderUrl, options);
+		return fetchWithRefresh<TOrderResponse>(orderUrl, options);
 	}
+	return Promise.reject('no access token');
 };
 
-const login = async (form: any) => {
-	return postRequest(loginUrl, form)
+const login = async (form: Omit<IUserWithPassword, 'name'>): Promise<TUser> => {
+	return postRequest<TUserResponse, Omit<IUserWithPassword, 'name'>>(
+		loginUrl,
+		form
+	)
 		.then(setTokens)
 		.then((data) => data.user);
 };
 
-const register = async (form: any) => {
-	return postRequest(registerUrl, form)
+const register = async (form: IUserWithPassword): Promise<TUser> => {
+	return postRequest<TUserResponse, IUserWithPassword>(registerUrl, form)
 		.then(setTokens)
 		.then((data) => data.user);
 };
 
-const getUser = async () => {
+const getUser = async (): Promise<TUser> => {
 	const accessToken = localStorage.getItem('accessToken');
 	if (accessToken) {
 		const options: RequestInit = {
@@ -118,11 +140,15 @@ const getUser = async () => {
 				Authorization: accessToken,
 			},
 		};
-		return fetchWithRefresh(userUrl, options).then((data) => data.user);
+		return fetchWithRefresh<Pick<TUserResponse, 'user' | 'success'>>(
+			userUrl,
+			options
+		).then((data) => data && data.user);
 	}
+	return Promise.reject('no access token');
 };
 
-const patchUser = async (form: UserWithPassword) => {
+const patchUser = async (form: IUserWithPassword): Promise<TUser> => {
 	const accessToken = localStorage.getItem('accessToken');
 	if (accessToken) {
 		const options: RequestInit = {
@@ -135,15 +161,19 @@ const patchUser = async (form: UserWithPassword) => {
 				...form,
 			}),
 		};
-		return fetchWithRefresh(userUrl, options).then((data) => data.user);
+		return fetchWithRefresh<Pick<TUserResponse, 'user' | 'success'>>(
+			userUrl,
+			options
+		).then((data) => data && data.user);
 	}
+	return Promise.reject('no access token');
 };
 
-const logout = async () => {
-	const body = {
+const logout = async (): Promise<void> => {
+	const body: TTokenBody = {
 		token: localStorage.getItem('refreshToken'),
 	};
-	return postRequest(logoutUrl, body).then((data) => {
+	return postRequest<TResponse, TTokenBody>(logoutUrl, body).then((data) => {
 		if (data.success) {
 			localStorage.removeItem('refreshToken');
 			localStorage.removeItem('accessToken');
@@ -151,20 +181,25 @@ const logout = async () => {
 	});
 };
 
-const forgotPassword = async (form: any) => {
-	return postRequest(passwordResetUrl, form).then((data) => {
+const forgotPassword = async (form: TForgotPasswordBody): Promise<void> => {
+	return postRequest<TResponse, TForgotPasswordBody>(
+		passwordResetUrl,
+		form
+	).then((data) => {
 		if (data.success) {
 			localStorage.setItem('resetPassword', 'true');
 		}
 	});
 };
 
-const resetPassword = async (form: any) => {
-	return postRequest(resetUrl, form).then((data) => {
-		if (data.success) {
-			localStorage.removeItem('resetPassword');
+const resetPassword = async (form: TResetPasswordBody): Promise<void> => {
+	return postRequest<TResponse, TResetPasswordBody>(resetUrl, form).then(
+		(data) => {
+			if (data.success) {
+				localStorage.removeItem('resetPassword');
+			}
 		}
-	});
+	);
 };
 
 export const api = {

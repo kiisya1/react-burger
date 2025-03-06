@@ -4,12 +4,12 @@ import {
 	nanoid,
 	PayloadAction,
 } from '@reduxjs/toolkit';
-import { ConstructorIngredient } from '../../models/burger-constructor.model';
-import { Ingredient } from '../../models/ingredient.model';
+import { TConstructorIngredient } from '../../models/constructor-ingredient.model';
+import { TIngredient } from '../../models/ingredient.model';
 
 interface BurgerConstructorState {
-	bun: ConstructorIngredient | null;
-	ingredients: ConstructorIngredient[];
+	bun: TConstructorIngredient | null;
+	ingredients: TConstructorIngredient[];
 }
 
 const initialState: BurgerConstructorState = {
@@ -18,7 +18,7 @@ const initialState: BurgerConstructorState = {
 };
 
 const convertIngredientIntoConstructorIngredient = (
-	ingredient: Ingredient,
+	ingredient: TIngredient,
 	id: string
 ) => {
 	return {
@@ -44,7 +44,7 @@ export const burgerConstructorSlice = createSlice({
 					countMap.set(value.bun.ingredientId, 2);
 				}
 				if (value.ingredients.length) {
-					value.ingredients.forEach((item: ConstructorIngredient) => {
+					value.ingredients.forEach((item: TConstructorIngredient) => {
 						countMap.set(
 							item.ingredientId,
 							(countMap.get(item.ingredientId) ?? 0) + 1
@@ -62,7 +62,7 @@ export const burgerConstructorSlice = createSlice({
 					result += value.bun.price * 2;
 				}
 				if (value.ingredients.length) {
-					value.ingredients.forEach((item: ConstructorIngredient) => {
+					value.ingredients.forEach((item: TConstructorIngredient) => {
 						result += item.price;
 					});
 				}
@@ -71,7 +71,7 @@ export const burgerConstructorSlice = createSlice({
 		),
 		getOrderIngredients: createSelector(
 			(state: BurgerConstructorState) => state,
-			(value: BurgerConstructorState) => {
+			(value: BurgerConstructorState): string[] | undefined => {
 				if (value.bun && value.ingredients.length) {
 					return [
 						value.bun.ingredientId,
@@ -79,24 +79,25 @@ export const burgerConstructorSlice = createSlice({
 						value.bun.ingredientId,
 					];
 				}
+				return;
 			}
 		),
 	},
 	reducers: {
 		addIngredient: {
-			reducer: (state, action: PayloadAction<ConstructorIngredient>) => {
+			reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
 				state.ingredients.push(action.payload);
 			},
-			prepare: (ingredient: Ingredient) => {
+			prepare: (ingredient: TIngredient) => {
 				const id = nanoid();
 				return convertIngredientIntoConstructorIngredient(ingredient, id);
 			},
 		},
 		addBun: {
-			reducer: (state, action: PayloadAction<ConstructorIngredient>) => {
+			reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
 				state.bun = action.payload;
 			},
-			prepare: (ingredient: Ingredient) => {
+			prepare: (ingredient: TIngredient) => {
 				const id = nanoid();
 				return convertIngredientIntoConstructorIngredient(ingredient, id);
 			},

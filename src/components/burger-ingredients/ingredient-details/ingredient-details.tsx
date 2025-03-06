@@ -1,13 +1,14 @@
 import styles from './ingredient-details.module.scss';
-import { Ingredient } from '../../../models/ingredient.model';
+import { TIngredient } from '../../../models/ingredient.model';
 import { useAppSelector } from '../../../utils/hooks';
 import { useParams } from 'react-router-dom';
+import React from 'react';
 
-export const IngredientDetails = () => {
+export const IngredientDetails = (): React.JSX.Element => {
 	const { id } = useParams<'id'>();
-	const ingredient: Ingredient | null =
+	const ingredient: TIngredient | null =
 		useAppSelector((state) =>
-			state.ingredients.ingredients.find((item: Ingredient) => item._id === id)
+			state.ingredients.ingredients.find((item: TIngredient) => item._id === id)
 		) ?? null;
 
 	if (!ingredient)

@@ -3,20 +3,26 @@ import React, { useEffect } from 'react';
 import { ModalOverlay } from '../modal-overlay/modal-overlay';
 import styles from './modal.module.scss';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import { ModalProps } from '../../models/modal.model';
+
+type TModal = {
+	children?: React.ReactNode;
+	title?: string;
+	titleStyle?: string;
+	onClose: () => void;
+};
 
 const modalRoot = document.getElementById('modal-root');
 
-export const Modal = (props: ModalProps) => {
+export const Modal = (props: TModal): React.JSX.Element => {
 	useEffect(() => {
-		const onKeydown = (event: KeyboardEvent) => {
+		const onKeydown = (event: KeyboardEvent): void => {
 			if (event.code === 'Escape') {
 				props.onClose();
 			}
 		};
 
 		window.addEventListener('keydown', onKeydown);
-		return () => {
+		return (): void => {
 			window.removeEventListener('keydown', onKeydown);
 		};
 	}, [props, props.onClose]);

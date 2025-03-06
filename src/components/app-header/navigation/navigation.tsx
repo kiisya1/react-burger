@@ -1,7 +1,8 @@
 import { NavigationItem } from '../navigation-item/navigation-item';
 import styles from './navigation.module.scss';
+import React from 'react';
 
-export const Navigation = () => {
+export const Navigation = (): React.JSX.Element => {
 	return (
 		<nav className={styles.navigation}>
 			<ul className={styles.navigation__list}>

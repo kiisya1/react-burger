@@ -1,11 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { Ingredient } from '../../models/ingredient.model';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { TIngredient } from '../../models/ingredient.model';
 import { loadIngredients } from './actions';
+import { TIngredientsResponse } from '../../models/api.model';
 
 interface IngredientsState {
 	loading: boolean;
 	error: string | null;
-	ingredients: Ingredient[];
+	ingredients: TIngredient[];
 }
 
 const initialState: IngredientsState = {
@@ -27,9 +28,12 @@ export const ingredientsSlice = createSlice({
 				state.loading = false;
 				state.error = action.error?.message || 'unknown error';
 			})
-			.addCase(loadIngredients.fulfilled, (state, action) => {
-				state.loading = false;
-				state.ingredients = action.payload.data;
-			});
+			.addCase(
+				loadIngredients.fulfilled,
+				(state, action: PayloadAction<TIngredientsResponse>) => {
+					state.loading = false;
+					state.ingredients = action.payload.data;
+				}
+			);
 	},
 });

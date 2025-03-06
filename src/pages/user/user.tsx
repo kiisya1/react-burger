@@ -2,13 +2,7 @@ import {
 	Button,
 	Input,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import React, {
-	SyntheticEvent,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './user.module.scss';
 import {
 	getUser,
@@ -18,24 +12,33 @@ import {
 } from '../../services/user/reducer';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { updateUser } from '../../services/user/actions';
+import { TUser } from '../../models/user.model';
 
-const initialDisableState = {
+type TUserFormState = {
+	email: string;
+	password: string;
+	name: string;
+};
+
+type TUserFormDisabledState = { [uf in keyof TUserFormState]: boolean };
+
+const initialDisableState: TUserFormDisabledState = {
 	email: true,
 	password: true,
 	name: true,
 };
 
-export const User = () => {
+export const User = (): React.JSX.Element => {
 	const dispatch = useAppDispatch();
-	const [disabledState, setDisabledState] = useState<Record<string, boolean>>({
+	const [disabledState, setDisabledState] = useState<TUserFormDisabledState>({
 		...initialDisableState,
 	});
 
-	const user = useAppSelector(getUser);
-	const isUpdating = useAppSelector(getUserIsUpdating);
-	const isUpdated = useAppSelector(getUserIsUpdated);
+	const user: TUser | null = useAppSelector(getUser);
+	const isUpdating: boolean = useAppSelector(getUserIsUpdating);
+	const isUpdated: boolean = useAppSelector(getUserIsUpdated);
 
-	const initialState = useMemo(() => {
+	const initialState: TUserFormState = useMemo(() => {
 		return {
 			email: user?.email ?? '',
 			password: '',
@@ -43,7 +46,7 @@ export const User = () => {
 		};
 	}, [user]);
 
-	const [state, setState] = useState({
+	const [state, setState] = useState<TUserFormState>({
 		...initialState,
 	});
 
@@ -56,12 +59,12 @@ export const User = () => {
 		}
 	}, [dispatch, isUpdated]);
 
-	const isButtonsShown = useMemo(() => {
+	const isButtonsShown: boolean = useMemo(() => {
 		return Object.values(disabledState).some((disabled) => !disabled);
 	}, [disabledState]);
 
 	const onDisabledChange = useCallback(
-		(field: string) => {
+		(field: keyof TUserFormDisabledState): void => {
 			setDisabledState({
 				...disabledState,
 				[field]: !disabledState[field],
@@ -71,7 +74,7 @@ export const User = () => {
 	);
 
 	const onInputChange = useCallback(
-		(event: React.ChangeEvent<HTMLInputElement>) => {
+		(event: React.ChangeEvent<HTMLInputElement>): void => {
 			setState({
 				...state,
 				[event.target.name]: event.target.value,
@@ -81,14 +84,14 @@ export const User = () => {
 	);
 
 	const onSubmit = useCallback(
-		(e: SyntheticEvent) => {
+		(e: React.FormEvent<HTMLFormElement>): void => {
 			e.preventDefault();
 			dispatch(updateUser(state));
 		},
 		[dispatch, state]
 	);
 
-	const onCancel = useCallback(() => {
+	const onCancel = useCallback((): void => {
 		setState({
 			...initialState,
 		});
