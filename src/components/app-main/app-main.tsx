@@ -3,8 +3,9 @@ import { BurgerConstructor } from '../burger-constructor/burger-constructor';
 import { BurgerIngredients } from '../burger-ingredients/burger-ingredients';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import React from 'react';
 
-export const AppMain = () => {
+export const AppMain = (): React.JSX.Element => {
 	return (
 		<main className={`${styles.main} pt-10 pb-10`}>
 			<h1

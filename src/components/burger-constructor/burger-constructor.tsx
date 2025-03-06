@@ -15,11 +15,12 @@ import {
 import { createOrder } from '../../services/order/actions';
 import { clearOrderNumber } from '../../services/order/reducer';
 import { getUser } from '../../services/user/reducer';
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { TUser } from '../../models/user.model';
 
-export const BurgerConstructor = () => {
-	const orderPrice = useAppSelector(getOrderPrice);
-	const user = useAppSelector(getUser);
+export const BurgerConstructor = (): React.JSX.Element => {
+	const orderPrice: number = useAppSelector(getOrderPrice);
+	const user: TUser | null = useAppSelector(getUser);
 	const navigate = useNavigate();
 	const location = useLocation();
 	const orderIngredients: string[] | undefined =
@@ -27,16 +28,16 @@ export const BurgerConstructor = () => {
 	const { order, loading, error } = useAppSelector((state) => state.order);
 	const dispatch = useAppDispatch();
 
-	const closeModal = useCallback(() => {
+	const closeModal = useCallback((): void => {
 		dispatch(clearOrderNumber());
 	}, [dispatch]);
 
 	const onCreateOrderClick = useCallback(
-		(event: SyntheticEvent) => {
+		(event: SyntheticEvent): void => {
+			event.preventDefault();
 			if (!user) {
 				navigate('/login', { state: { from: location } });
 			} else {
-				event.preventDefault();
 				orderIngredients && dispatch(createOrder(orderIngredients));
 			}
 		},

@@ -4,7 +4,7 @@ import { useAppSelector } from '../../utils/hooks';
 import { AppLoading } from '../app-loading/app-loading';
 import { getIsAuthChecked, getUser } from '../../services/user/reducer';
 
-type ProtectedProps = {
+type TProtected = {
 	onlyUnAuth?: boolean;
 	component: React.JSX.Element;
 };
@@ -12,7 +12,7 @@ type ProtectedProps = {
 const Protected = ({
 	onlyUnAuth = false,
 	component,
-}: ProtectedProps): React.JSX.Element => {
+}: TProtected): React.JSX.Element => {
 	const isAuthChecked = useAppSelector(getIsAuthChecked);
 	const user = useAppSelector(getUser);
 	const location = useLocation();

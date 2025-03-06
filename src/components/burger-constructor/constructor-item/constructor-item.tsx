@@ -1,11 +1,17 @@
-import { ConstructorItemProps } from '../../../models/burger-constructor.model';
+import { TConstructorIngredient } from '../../../models/constructor-ingredient.model';
 import {
 	ConstructorElement,
 	DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './constructor-item.module.scss';
-import { useCallback, useRef } from 'react';
-import { useDrag, useDrop } from 'react-dnd';
+import React, { useCallback, useRef } from 'react';
+import {
+	ConnectDropTarget,
+	DragSourceMonitor,
+	DropTargetMonitor,
+	useDrag,
+	useDrop,
+} from 'react-dnd';
 import type { XYCoord } from 'dnd-core';
 import {
 	sortIngredient,
@@ -13,23 +19,34 @@ import {
 } from '../../../services/burger-constructor/reducer';
 import { useAppDispatch } from '../../../utils/hooks';
 
-interface DragItem {
-	index: number;
+type TDragDropItem = {
+	index?: number;
 	id: string;
-	type: string;
+};
+
+type TDragCollectedProps = {
+	isDragging: boolean;
+};
+
+interface IConstructorItem extends TConstructorIngredient {
+	dropRef?: ConnectDropTarget;
+	index?: number;
 }
 
-export const ConstructorItem = (props: ConstructorItemProps) => {
+export const ConstructorItem = (props: IConstructorItem): React.JSX.Element => {
 	const ref = useRef<HTMLDivElement>(null);
 	const dispatch = useAppDispatch();
 
-	const deleteIngredient = useCallback(() => {
+	const deleteIngredient = useCallback((): void => {
 		dispatch(removeIngredient(props.id));
 	}, [dispatch, props.id]);
 
-	const [, drop] = useDrop<DragItem, void>({
+	const [, drop] = useDrop<TDragDropItem, void, unknown>({
 		accept: 'constructorItem',
-		hover(item: DragItem, monitor) {
+		hover(
+			item: TDragDropItem,
+			monitor: DropTargetMonitor<TDragDropItem, unknown>
+		) {
 			if (!ref.current) {
 				return;
 			}
@@ -38,7 +55,7 @@ export const ConstructorItem = (props: ConstructorItemProps) => {
 				const dragIndex = item.index;
 				const hoverIndex = props.index;
 
-				if (dragIndex === hoverIndex) {
+				if (!dragIndex || dragIndex === hoverIndex) {
 					return;
 				}
 				const hoverBoundingRect = ref.current?.getBoundingClientRect();
@@ -61,12 +78,16 @@ export const ConstructorItem = (props: ConstructorItemProps) => {
 		},
 	});
 
-	const [{ isDragging }, drag] = useDrag({
+	const [{ isDragging }, drag] = useDrag<
+		TDragDropItem,
+		unknown,
+		TDragCollectedProps
+	>({
 		type: 'constructorItem',
-		item: () => {
+		item: (): TDragDropItem => {
 			return { id: props.id, index: props.index };
 		},
-		collect: (monitor: any) => ({
+		collect: (monitor: DragSourceMonitor<TDragDropItem, unknown>) => ({
 			isDragging: monitor.isDragging(),
 		}),
 	});

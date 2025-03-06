@@ -1,8 +1,8 @@
-export type User = {
+export type TUser = {
 	name: string;
 	email: string;
 };
 
-export interface UserWithPassword extends User {
+export interface IUserWithPassword extends TUser {
 	password: string;
 }

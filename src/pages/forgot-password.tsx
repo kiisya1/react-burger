@@ -4,22 +4,28 @@ import {
 	Input,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import React, { SyntheticEvent, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { api } from '../utils/api';
 
-export const ForgotPassword = () => {
+type TForgotPasswordFormState = {
+	email: string;
+};
+
+type TFormErrorState = { [field in keyof TForgotPasswordFormState]: boolean };
+
+export const ForgotPassword = (): React.JSX.Element => {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const [state, setState] = useState({
+	const [state, setState] = useState<TForgotPasswordFormState>({
 		email: '',
 	});
 
-	const [errorState, setErrorState] = useState({
+	const [errorState, setErrorState] = useState<TFormErrorState>({
 		email: false,
 	});
 
 	const onInputChange = useCallback(
-		(event: React.ChangeEvent<HTMLInputElement>) => {
+		(event: React.ChangeEvent<HTMLInputElement>): void => {
 			setState({
 				...state,
 				[event.target.name]: event.target.value,
@@ -33,7 +39,7 @@ export const ForgotPassword = () => {
 	);
 
 	const onSubmit = useCallback(
-		(e: SyntheticEvent) => {
+		(e: React.FormEvent<HTMLFormElement>): void => {
 			e.preventDefault();
 			if (state.email) {
 				api.forgotPassword(state).then(() => {

@@ -1,6 +1,12 @@
 import { AppHeader } from '../app-header/app-header';
 import styles from './app.module.scss';
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import {
+	Routes,
+	Route,
+	useLocation,
+	useNavigate,
+	Location,
+} from 'react-router-dom';
 import {
 	Home,
 	NotFound,
@@ -21,18 +27,22 @@ import { Modal } from '../modal/modal';
 import { checkUserAuth } from '../../services/user/actions';
 import { OnlyAuth, OnlyUnAuth } from '../protected-route/protected-route';
 
-export const App = () => {
+type TBackgroundLocation = {
+	backgroundLocation?: Location;
+};
+
+export const App = (): React.JSX.Element => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const location = useLocation();
-	const state = location.state as { backgroundLocation?: Location };
+	const location: Location<TBackgroundLocation> = useLocation();
+	const state: TBackgroundLocation = location.state;
 
-	useEffect(() => {
+	useEffect((): void => {
 		dispatch(loadIngredients());
 		dispatch(checkUserAuth());
 	}, [dispatch]);
 
-	const closeModal = () => {
+	const closeModal = (): void => {
 		navigate(-1);
 	};
 
