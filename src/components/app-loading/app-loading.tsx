@@ -1,6 +1,7 @@
 import styles from './app-loading.module.scss';
+import React from 'react';
 
-export const AppLoading = () => {
+export const AppLoading = (): React.JSX.Element => {
 	return (
 		<svg
 			className={styles.loading}

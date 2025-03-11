@@ -4,14 +4,22 @@ import {
 	Input,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link, useLocation } from 'react-router-dom';
-import React, { SyntheticEvent, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useAppDispatch } from '../utils/hooks';
 import { register } from '../services/user/actions';
 
-export const Register = () => {
+type TRegisterFormState = {
+	email: string;
+	password: string;
+	name: string;
+};
+
+type TFormErrorState = { [field in keyof TRegisterFormState]: boolean };
+
+export const Register = (): React.JSX.Element => {
 	const dispatch = useAppDispatch();
 	const location = useLocation();
-	const [state, setState] = useState({
+	const [state, setState] = useState<TRegisterFormState>({
 		email: '',
 		password: '',
 		name: '',
@@ -21,7 +29,7 @@ export const Register = () => {
 		setIsHidden(!isHidden);
 	}, [isHidden]);
 
-	const [errorState, setErrorState] = useState({
+	const [errorState, setErrorState] = useState<TFormErrorState>({
 		password: false,
 		email: false,
 		name: false,
@@ -42,7 +50,7 @@ export const Register = () => {
 	);
 
 	const onSubmit = useCallback(
-		(e: SyntheticEvent) => {
+		(e: React.FormEvent<HTMLFormElement>): void => {
 			e.preventDefault();
 			if (state.password && state.email && state.name) {
 				dispatch(register(state));

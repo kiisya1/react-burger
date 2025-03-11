@@ -2,10 +2,11 @@ import { NavLink, Outlet } from 'react-router-dom';
 import styles from './profile.module.scss';
 import { useAppDispatch } from '../../utils/hooks';
 import { logout } from '../../services/user/actions';
+import React from 'react';
 
-export const Profile = () => {
+export const Profile = (): React.JSX.Element => {
 	const dispatch = useAppDispatch();
-	const onExit = () => {
+	const onExit = (): void => {
 		dispatch(logout());
 	};
 

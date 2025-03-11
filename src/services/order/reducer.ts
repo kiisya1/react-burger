@@ -1,5 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { createOrder } from './actions';
+import { TOrderResponse } from '../../models/api.model';
 
 interface OrderState {
 	order: number | null;
@@ -30,10 +31,13 @@ export const orderSlice = createSlice({
 				state.loading = false;
 				state.error = action.error?.message || 'unknown error';
 			})
-			.addCase(createOrder.fulfilled, (state, action) => {
-				state.loading = false;
-				state.order = action.payload.order.number;
-			});
+			.addCase(
+				createOrder.fulfilled,
+				(state, action: PayloadAction<TOrderResponse>) => {
+					state.loading = false;
+					state.order = action.payload.order.number;
+				}
+			);
 	},
 });
 

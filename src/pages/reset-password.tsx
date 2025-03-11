@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styles from './pages.module.scss';
 import {
 	Button,
@@ -7,15 +7,22 @@ import {
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
 
-export const ResetPassword = () => {
+type TResetPasswordFormState = {
+	token: string;
+	password: string;
+};
+
+type TFormErrorState = { [field in keyof TResetPasswordFormState]: boolean };
+
+export const ResetPassword = (): React.JSX.Element => {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const [state, setState] = useState({
+	const [state, setState] = useState<TResetPasswordFormState>({
 		password: '',
 		token: '',
 	});
 	const [isHidden, setIsHidden] = useState<boolean>(true);
-	const [errorState, setErrorState] = useState({
+	const [errorState, setErrorState] = useState<TFormErrorState>({
 		password: false,
 		token: false,
 	});
@@ -39,7 +46,7 @@ export const ResetPassword = () => {
 	}, [isHidden]);
 
 	const onSubmit = useCallback(
-		(e: SyntheticEvent) => {
+		(e: React.FormEvent<HTMLFormElement>): void => {
 			e.preventDefault();
 			if (state.password && state.token) {
 				api.resetPassword(state).then(() => {

@@ -1,11 +1,19 @@
-import { Ingredient } from '../../../models/ingredient.model';
+import { TIngredient } from '../../../models/ingredient.model';
 import styles from './ingredients-group.module.scss';
 import { IngredientItem } from '../ingredient-item/ingredient-item';
-import { IngredientsGroupProps } from '../../../models/burger-ingredients.model';
 import { useAppSelector } from '../../../utils/hooks';
 import { getCountedIngredients } from '../../../services/burger-constructor/reducer';
+import React from 'react';
 
-export const IngredientsGroup = (props: IngredientsGroupProps) => {
+type TIngredientsGroup = {
+	ingredients: TIngredient[];
+	title: string;
+	listRef: React.RefObject<HTMLHeadingElement>;
+};
+
+export const IngredientsGroup = (
+	props: TIngredientsGroup
+): React.JSX.Element => {
 	const counts: Map<string, number> = useAppSelector(getCountedIngredients);
 	return (
 		<>
@@ -13,7 +21,7 @@ export const IngredientsGroup = (props: IngredientsGroupProps) => {
 				{props.title}
 			</h2>
 			<ul className={`${styles.ingredients_group__list}`}>
-				{props.ingredients.map((ingredient: Ingredient) => {
+				{props.ingredients.map((ingredient: TIngredient) => {
 					return (
 						<IngredientItem
 							key={ingredient._id}

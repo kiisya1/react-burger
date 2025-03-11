@@ -4,7 +4,7 @@ import { useAppSelector } from '../../../utils/hooks';
 import { AppLoading } from '../../app-loading/app-loading';
 import React from 'react';
 
-export const OrderDetails = () => {
+export const OrderDetails = (): React.JSX.Element => {
 	const { order, loading, error } = useAppSelector((state) => state.order);
 	if (loading) {
 		return (

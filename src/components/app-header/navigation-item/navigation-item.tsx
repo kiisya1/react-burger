@@ -1,4 +1,3 @@
-import { NavigationItemProps } from '../../../models/navigation.model';
 import styles from './navigation-item.module.scss';
 import { NavLink } from 'react-router-dom';
 import {
@@ -6,8 +5,15 @@ import {
 	ListIcon,
 	ProfileIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import React from 'react';
 
-export const NavigationItem = (props: NavigationItemProps) => {
+type TNavigationItem = {
+	title: string;
+	link: string;
+	icon: string;
+};
+
+export const NavigationItem = (props: TNavigationItem): React.JSX.Element => {
 	return (
 		<NavLink
 			to={props.link}

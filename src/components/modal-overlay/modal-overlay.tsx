@@ -1,5 +1,10 @@
 import styles from './modal-overlay.module.scss';
+import React from 'react';
 
-export const ModalOverlay = (props: { onClick: () => void }) => {
+type TModalOverlay = {
+	onClick: () => void;
+};
+
+export const ModalOverlay = (props: TModalOverlay): React.JSX.Element => {
 	return <div onClick={() => props.onClick()} className={styles.overlay}></div>;
 };

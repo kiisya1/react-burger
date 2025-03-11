@@ -1,9 +1,9 @@
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import styles from './not-found.module.scss';
 
-export const NotFound = () => {
+export const NotFound = (): React.JSX.Element => {
 	const navigate: NavigateFunction = useNavigate();
 	const onClick = useCallback((): void => {
 		navigate('/', { replace: true });

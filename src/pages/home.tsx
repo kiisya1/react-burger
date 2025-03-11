@@ -2,8 +2,9 @@ import { useAppSelector } from '../utils/hooks';
 import { AppError } from '../components/app-error/app-error';
 import { AppLoading } from '../components/app-loading/app-loading';
 import { AppMain } from '../components/app-main/app-main';
+import React from 'react';
 
-export const Home = () => {
+export const Home = (): React.JSX.Element => {
 	const { ingredients, loading, error } = useAppSelector(
 		(state) => state.ingredients
 	);

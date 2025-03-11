@@ -3,13 +3,19 @@ import {
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './ingredient-item.module.scss';
-import { IngredientItemProps } from '../../../models/burger-ingredients.model';
 import { useDrag } from 'react-dnd';
 import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
+import { TIngredient } from '../../../models/ingredient.model';
 
-export const IngredientItem = (props: IngredientItemProps) => {
+type TIngredientItem = {
+	ingredient: TIngredient;
+	count?: number;
+};
+
+export const IngredientItem = (props: TIngredientItem): React.JSX.Element => {
 	const location = useLocation();
-	const [, dragRef] = useDrag({
+	const [, dragRef] = useDrag<TIngredient, unknown, unknown>({
 		type: props.ingredient.type === 'bun' ? 'bun' : 'ingredient',
 		item: props.ingredient,
 	});
