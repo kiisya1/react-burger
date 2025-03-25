@@ -8,3 +8,5 @@ export const loginUrl = 'auth/login';
 export const tokenUrl = 'auth/token';
 export const userUrl = 'auth/user';
 export const logoutUrl = 'auth/logout';
+export const wsOrdersUrl = 'wss://norma.nomoreparties.space/orders/all';
+export const wsProfileOrdersUrl = 'wss://norma.nomoreparties.space/orders';

@@ -1,0 +1,21 @@
+.wrapper {
+	padding-top: 120px;
+	padding-bottom: 120px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	max-width: 640px;
+	width: 100%;
+}
+
+.header {
+	min-height: 64px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}

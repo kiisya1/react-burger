@@ -10,11 +10,7 @@ export const Navigation = (): React.JSX.Element => {
 					<NavigationItem title='Конструктор' link='/' icon='BurgerIcon' />
 				</li>
 				<li className={styles.navigation__item}>
-					<NavigationItem
-						title='Лента заказов'
-						icon='ListIcon'
-						link='/orders-list'
-					/>
+					<NavigationItem title='Лента заказов' icon='ListIcon' link='/feed' />
 				</li>
 			</ul>
 		</nav>

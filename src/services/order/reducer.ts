@@ -1,41 +1,66 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { createOrder } from './actions';
-import { TOrderResponse } from '../../models/api.model';
+import {
+	ActionReducerMapBuilder,
+	createSlice,
+	PayloadAction,
+} from '@reduxjs/toolkit';
+import { createOrder, getOrder } from './actions';
+import { TOrderInfoResponse, TOrderResponse } from '../../models/api.model';
+import { TOrder } from '../../models/order.model';
 
-interface OrderState {
-	order: number | null;
+type TOrderState = {
+	createdOrder: number | null;
 	loading: boolean;
 	error: string | null;
-}
+	order: TOrder | null;
+	orderLoading: boolean;
+	orderError: string | null;
+};
 
-const initialState: OrderState = {
-	order: null,
+const initialState: TOrderState = {
+	createdOrder: null,
 	loading: false,
 	error: null,
+	order: null,
+	orderError: null,
+	orderLoading: false,
 };
 
 export const orderSlice = createSlice({
 	name: 'order',
 	initialState,
 	reducers: {
-		clearOrderNumber: (state) => {
-			state.order = null;
+		clearOrderNumber: (state: TOrderState) => {
+			state.createdOrder = null;
 		},
 	},
-	extraReducers: (builder) => {
+	extraReducers: (builder: ActionReducerMapBuilder<TOrderState>) => {
 		builder
 			.addCase(createOrder.pending, (state) => {
 				state.loading = true;
 			})
 			.addCase(createOrder.rejected, (state, action) => {
 				state.loading = false;
-				state.error = action.error?.message || 'unknown error';
+				state.error = (action.error as Error)?.message || 'unknown error';
 			})
 			.addCase(
 				createOrder.fulfilled,
 				(state, action: PayloadAction<TOrderResponse>) => {
 					state.loading = false;
-					state.order = action.payload.order.number;
+					state.createdOrder = action.payload.order.number;
+				}
+			)
+			.addCase(getOrder.pending, (state) => {
+				state.orderLoading = true;
+			})
+			.addCase(getOrder.rejected, (state, action) => {
+				state.orderLoading = false;
+				state.orderError = (action.error as Error)?.message || 'unknown error';
+			})
+			.addCase(
+				getOrder.fulfilled,
+				(state, action: PayloadAction<TOrderInfoResponse>) => {
+					state.orderLoading = false;
+					state.order = action.payload.orders[0];
 				}
 			);
 	},

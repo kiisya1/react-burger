@@ -5,7 +5,9 @@ import { AppLoading } from '../../app-loading/app-loading';
 import React from 'react';
 
 export const OrderDetails = (): React.JSX.Element => {
-	const { order, loading, error } = useAppSelector((state) => state.order);
+	const { createdOrder, loading, error } = useAppSelector(
+		(state) => state.order
+	);
 	if (loading) {
 		return (
 			<div className={styles.order_details__loading}>
@@ -26,7 +28,7 @@ export const OrderDetails = (): React.JSX.Element => {
 		<section className={`${styles.order_details} pt-4 pl-15 pr-15 mb-20`}>
 			<h2
 				className={`${styles.order_details__title} text text_type_digits-large mb-8`}>
-				{order}
+				{createdOrder}
 			</h2>
 			<p className='text text_type_main-medium mb-15'>идентификатор заказа</p>
 			<img className='mb-15' src={imgPath} alt='Done Icon' />

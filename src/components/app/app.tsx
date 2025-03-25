@@ -18,6 +18,8 @@ import {
 	User,
 	Orders,
 	Ingredient,
+	Feed,
+	Order,
 } from '../../pages';
 import { IngredientDetails } from '../burger-ingredients/ingredient-details/ingredient-details';
 import React, { useEffect } from 'react';
@@ -26,6 +28,7 @@ import { useAppDispatch } from '../../utils/hooks';
 import { Modal } from '../modal/modal';
 import { checkUserAuth } from '../../services/user/actions';
 import { OnlyAuth, OnlyUnAuth } from '../protected-route/protected-route';
+import { OrderInfo } from '../orders-list/order-info/order-info';
 
 type TBackgroundLocation = {
 	backgroundLocation?: Location;
@@ -35,6 +38,8 @@ export const App = (): React.JSX.Element => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const location: Location<TBackgroundLocation> = useLocation();
+	const paths = location.pathname.split('/');
+	const orderId = paths[paths.length - 1];
 	const state: TBackgroundLocation = location.state;
 
 	useEffect((): void => {
@@ -69,6 +74,12 @@ export const App = (): React.JSX.Element => {
 					<Route path='orders' element={<OnlyAuth component={<Orders />} />} />
 				</Route>
 				<Route path='/ingredients/:id' element={<Ingredient />} />
+				<Route path='/feed' element={<Feed />} />
+				<Route path='/feed/:id' element={<Order />} />
+				<Route
+					path='/profile/orders/:id'
+					element={<OnlyAuth component={<Order />} />}
+				/>
 				<Route path='*' element={<NotFound />} />
 			</Routes>
 
@@ -82,6 +93,28 @@ export const App = (): React.JSX.Element => {
 								title='Детали ингредиента'
 								titleStyle='text_type_main-large'>
 								<IngredientDetails />
+							</Modal>
+						}
+					/>
+					<Route
+						path='/feed/:id'
+						element={
+							<Modal
+								onClose={closeModal}
+								title={`#${orderId}`}
+								titleStyle='text_type_digits-default'>
+								<OrderInfo />
+							</Modal>
+						}
+					/>
+					<Route
+						path='/profile/orders/:id'
+						element={
+							<Modal
+								onClose={closeModal}
+								title={`#${orderId}`}
+								titleStyle='text_type_digits-default'>
+								<OrderInfo />
 							</Modal>
 						}
 					/>
