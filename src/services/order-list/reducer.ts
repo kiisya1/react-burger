@@ -1,5 +1,9 @@
 import { TOrder } from '../../models/order.model';
-import { ActionReducerMapBuilder, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+	ActionReducerMapBuilder,
+	createSlice,
+	PayloadAction,
+} from '@reduxjs/toolkit';
 import { onClose, onConnecting, onError, onMessage, onOpen } from './actions';
 import { TOrderListResponse, WebsocketStatus } from '../../models/api.model';
 

@@ -1,6 +1,10 @@
 import { TOrderListResponse, WebsocketStatus } from '../../models/api.model';
 import { TOrder } from '../../models/order.model';
-import { ActionReducerMapBuilder, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+	ActionReducerMapBuilder,
+	createSlice,
+	PayloadAction,
+} from '@reduxjs/toolkit';
 import {
 	onProfileClose,
 	onProfileConnecting,
