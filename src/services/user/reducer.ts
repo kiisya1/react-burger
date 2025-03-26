@@ -6,7 +6,7 @@ import {
 import { checkUserAuth, login, logout, register, updateUser } from './actions';
 import { TUser } from '../../models/user.model';
 
-type UserState = {
+type TUserState = {
 	user: TUser | null;
 	isAuthChecked: boolean;
 	isUpdated: boolean;
@@ -14,7 +14,7 @@ type UserState = {
 	error: string | null;
 };
 
-const initialState: UserState = {
+const initialState: TUserState = {
 	user: null,
 	isAuthChecked: false,
 	isUpdated: false,
@@ -26,47 +26,53 @@ export const userSlice = createSlice({
 	name: 'user',
 	initialState,
 	reducers: {
-		setIsAuthChecked: (state, action: PayloadAction<boolean>) => {
+		setIsAuthChecked: (state: TUserState, action: PayloadAction<boolean>) => {
 			state.isAuthChecked = action.payload;
 		},
-		setUserIsUpdated: (state, action: PayloadAction<boolean>) => {
+		setUserIsUpdated: (state: TUserState, action: PayloadAction<boolean>) => {
 			state.isUpdated = action.payload;
 		},
 	},
 	selectors: {
-		getIsAuthChecked: (state: UserState) => state.isAuthChecked,
+		getIsAuthChecked: (state: TUserState) => state.isAuthChecked,
 		getUser: (state): TUser | null => state.user,
-		getUserIsUpdated: (state: UserState) => state.isUpdated,
-		getUserIsUpdating: (state: UserState) => state.isUpdating,
+		getUserIsUpdated: (state: TUserState) => state.isUpdated,
+		getUserIsUpdating: (state: TUserState) => state.isUpdating,
 	},
-	extraReducers: (builder: ActionReducerMapBuilder<UserState>) => {
+	extraReducers: (builder: ActionReducerMapBuilder<TUserState>) => {
 		builder
-			.addCase(login.fulfilled, (state, action) => {
+			.addCase(login.fulfilled, (state, action: PayloadAction<TUser>) => {
 				state.user = action.payload;
 				state.isAuthChecked = true;
 			})
-			.addCase(register.fulfilled, (state, action) => {
+			.addCase(register.fulfilled, (state, action: PayloadAction<TUser>) => {
 				state.user = action.payload;
 				state.isAuthChecked = true;
 			})
 			.addCase(logout.fulfilled, (state) => {
 				state.user = null;
 			})
-			.addCase(updateUser.fulfilled, (state: UserState, action) => {
-				state.user = action.payload;
-				state.isUpdating = false;
-				state.isUpdated = true;
-			})
+			.addCase(
+				updateUser.fulfilled,
+				(state: TUserState, action: PayloadAction<TUser>) => {
+					state.user = action.payload;
+					state.isUpdating = false;
+					state.isUpdated = true;
+				}
+			)
 			.addCase(updateUser.pending, (state) => {
 				state.isUpdating = true;
 			})
 			.addCase(updateUser.rejected, (state) => {
 				state.isUpdating = false;
 			})
-			.addCase(checkUserAuth.fulfilled, (state, action) => {
-				state.user = action.payload;
-				state.isAuthChecked = true;
-			})
+			.addCase(
+				checkUserAuth.fulfilled,
+				(state, action: PayloadAction<TUser>) => {
+					state.user = action.payload;
+					state.isAuthChecked = true;
+				}
+			)
 			.addCase(checkUserAuth.rejected, (state) => {
 				state.user = null;
 				state.isAuthChecked = true;

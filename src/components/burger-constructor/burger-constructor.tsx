@@ -25,7 +25,9 @@ export const BurgerConstructor = (): React.JSX.Element => {
 	const location = useLocation();
 	const orderIngredients: string[] | undefined =
 		useAppSelector(getOrderIngredients);
-	const { order, loading, error } = useAppSelector((state) => state.order);
+	const { createdOrder, loading, error } = useAppSelector(
+		(state) => state.order
+	);
 	const dispatch = useAppDispatch();
 
 	const closeModal = useCallback((): void => {
@@ -60,7 +62,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 					Оформить заказ
 				</Button>
 			</section>
-			{(loading || order || error) && (
+			{(loading || createdOrder || error) && (
 				<Modal onClose={closeModal}>
 					<OrderDetails />
 				</Modal>

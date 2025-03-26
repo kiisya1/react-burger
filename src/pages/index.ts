@@ -8,6 +8,8 @@ import { ResetPassword } from './reset-password';
 import { User } from './user/user';
 import { Orders } from './orders';
 import { Ingredient } from './ingredient/ingredient';
+import { Order } from './order/order';
+import { Feed } from './feed/feed';
 
 export {
 	Home,
@@ -20,4 +22,6 @@ export {
 	User,
 	Orders,
 	Ingredient,
+	Order,
+	Feed,
 };

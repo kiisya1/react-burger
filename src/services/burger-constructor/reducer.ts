@@ -7,12 +7,12 @@ import {
 import { TConstructorIngredient } from '../../models/constructor-ingredient.model';
 import { TIngredient } from '../../models/ingredient.model';
 
-interface BurgerConstructorState {
+type TBurgerConstructorState = {
 	bun: TConstructorIngredient | null;
 	ingredients: TConstructorIngredient[];
-}
+};
 
-const initialState: BurgerConstructorState = {
+const initialState: TBurgerConstructorState = {
 	bun: null,
 	ingredients: [],
 };
@@ -20,7 +20,7 @@ const initialState: BurgerConstructorState = {
 const convertIngredientIntoConstructorIngredient = (
 	ingredient: TIngredient,
 	id: string
-) => {
+): { payload: TConstructorIngredient } => {
 	return {
 		payload: {
 			text: ingredient.name,
@@ -37,9 +37,9 @@ export const burgerConstructorSlice = createSlice({
 	initialState,
 	selectors: {
 		getCountedIngredients: createSelector(
-			(state: BurgerConstructorState) => state,
-			(value: BurgerConstructorState) => {
-				const countMap: Map<string, number> = new Map();
+			(state: TBurgerConstructorState) => state,
+			(value: TBurgerConstructorState): Map<string, number> => {
+				const countMap: Map<string, number> = new Map<string, number>();
 				if (value.bun) {
 					countMap.set(value.bun.ingredientId, 2);
 				}
@@ -55,8 +55,8 @@ export const burgerConstructorSlice = createSlice({
 			}
 		),
 		getOrderPrice: createSelector(
-			(state: BurgerConstructorState) => state,
-			(value: BurgerConstructorState) => {
+			(state: TBurgerConstructorState) => state,
+			(value: TBurgerConstructorState): number => {
 				let result = 0;
 				if (value.bun) {
 					result += value.bun.price * 2;
@@ -70,8 +70,8 @@ export const burgerConstructorSlice = createSlice({
 			}
 		),
 		getOrderIngredients: createSelector(
-			(state: BurgerConstructorState) => state,
-			(value: BurgerConstructorState): string[] | undefined => {
+			(state: TBurgerConstructorState) => state,
+			(value: TBurgerConstructorState): string[] | undefined => {
 				if (value.bun && value.ingredients.length) {
 					return [
 						value.bun.ingredientId,
@@ -85,7 +85,10 @@ export const burgerConstructorSlice = createSlice({
 	},
 	reducers: {
 		addIngredient: {
-			reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
+			reducer: (
+				state: TBurgerConstructorState,
+				action: PayloadAction<TConstructorIngredient>
+			) => {
 				state.ingredients.push(action.payload);
 			},
 			prepare: (ingredient: TIngredient) => {
@@ -94,7 +97,10 @@ export const burgerConstructorSlice = createSlice({
 			},
 		},
 		addBun: {
-			reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
+			reducer: (
+				state: TBurgerConstructorState,
+				action: PayloadAction<TConstructorIngredient>
+			) => {
 				state.bun = action.payload;
 			},
 			prepare: (ingredient: TIngredient) => {
@@ -102,13 +108,16 @@ export const burgerConstructorSlice = createSlice({
 				return convertIngredientIntoConstructorIngredient(ingredient, id);
 			},
 		},
-		removeIngredient: (state, action: PayloadAction<string>) => {
+		removeIngredient: (
+			state: TBurgerConstructorState,
+			action: PayloadAction<string>
+		) => {
 			state.ingredients = state.ingredients.filter(
 				(item) => item.id !== action.payload
 			);
 		},
 		sortIngredient: (
-			state,
+			state: TBurgerConstructorState,
 			action: PayloadAction<{ dragIndex: number; hoverIndex: number }>
 		) => {
 			state.ingredients.splice(

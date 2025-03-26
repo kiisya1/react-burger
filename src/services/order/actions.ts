@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../utils/api';
 import { clearConstructor } from '../burger-constructor/reducer';
-import { TOrderResponse } from '../../models/api.model';
+import { TOrderInfoResponse, TOrderResponse } from '../../models/api.model';
 
 export const createOrder = createAsyncThunk(
 	'order/createOrder',
@@ -10,5 +10,12 @@ export const createOrder = createAsyncThunk(
 			dispatch(clearConstructor());
 			return res;
 		});
+	}
+);
+
+export const getOrder = createAsyncThunk(
+	'order/getOrder',
+	async (id: string): Promise<TOrderInfoResponse> => {
+		return api.getOrder(id);
 	}
 );

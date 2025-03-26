@@ -19,6 +19,7 @@ import {
 	TUserResponse,
 	TIngredientsResponse,
 	TOrderResponse,
+	TOrderInfoResponse,
 } from '../models/api.model';
 
 const checkResponse = async <T>(res: Response): Promise<T> => {
@@ -96,6 +97,11 @@ const fetchWithRefresh = async <T>(
 
 const getIngredients = (): Promise<TIngredientsResponse> => {
 	return request<TIngredientsResponse>(ingredientsUrl);
+};
+
+const getOrder = (orderId: string): Promise<TOrderInfoResponse> => {
+	const url = `${orderUrl}/${orderId}`;
+	return request<TOrderInfoResponse>(url);
 };
 
 const addOrder = async (ingredients: string[]): Promise<TOrderResponse> => {
@@ -212,4 +218,6 @@ export const api = {
 	getIngredients,
 	forgotPassword,
 	resetPassword,
+	refreshToken,
+	getOrder,
 };
