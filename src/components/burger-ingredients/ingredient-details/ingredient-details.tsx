@@ -25,7 +25,11 @@ export const IngredientDetails = (): React.JSX.Element => {
 				src={ingredient?.image_large}
 				alt={ingredient?.name}
 			/>
-			<p className='text text_type_main-medium mb-8'>{ingredient?.name}</p>
+			<p
+				className='text text_type_main-medium mb-8'
+				data-testid='ingredient-details-name'>
+				{ingredient?.name}
+			</p>
 			<ul className={styles.ingredient_details__info}>
 				<li className={styles.ingredient_details__info_item}>
 					<p className='text_type_main-default text_color_inactive mb-2'>

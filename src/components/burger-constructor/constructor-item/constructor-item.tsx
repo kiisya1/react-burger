@@ -98,6 +98,7 @@ export const ConstructorItem = (props: IConstructorItem): React.JSX.Element => {
 		<div
 			ref={props.dropRef ?? ref}
 			style={{ opacity }}
+			data-testid='constructor-item'
 			className={`${styles.constructor_item} ${
 				props.isLocked ? styles.constructor_item__locked : ''
 			}`}>
