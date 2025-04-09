@@ -24,7 +24,8 @@ export const IngredientItem = (props: TIngredientItem): React.JSX.Element => {
 			<Link
 				className={styles.ingredient_item__link}
 				to={`/ingredients/${props.ingredient._id}`}
-				state={{ backgroundLocation: location }}>
+				state={{ backgroundLocation: location }}
+				data-testid='ingredient-item'>
 				{props.count && (
 					<Counter count={props.count} size='default' extraClass='m-1' />
 				)}

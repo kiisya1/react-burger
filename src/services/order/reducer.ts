@@ -16,7 +16,7 @@ type TOrderState = {
 	orderError: string | null;
 };
 
-const initialState: TOrderState = {
+export const initialState: TOrderState = {
 	createdOrder: null,
 	loading: false,
 	error: null,
@@ -24,6 +24,8 @@ const initialState: TOrderState = {
 	orderError: null,
 	orderLoading: false,
 };
+
+export const errorText = 'unknown error';
 
 export const orderSlice = createSlice({
 	name: 'order',
@@ -40,7 +42,7 @@ export const orderSlice = createSlice({
 			})
 			.addCase(createOrder.rejected, (state, action) => {
 				state.loading = false;
-				state.error = (action.error as Error)?.message || 'unknown error';
+				state.error = (action.error as Error)?.message || errorText;
 			})
 			.addCase(
 				createOrder.fulfilled,
@@ -54,7 +56,7 @@ export const orderSlice = createSlice({
 			})
 			.addCase(getOrder.rejected, (state, action) => {
 				state.orderLoading = false;
-				state.orderError = (action.error as Error)?.message || 'unknown error';
+				state.orderError = (action.error as Error)?.message || errorText;
 			})
 			.addCase(
 				getOrder.fulfilled,

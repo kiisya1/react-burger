@@ -14,12 +14,14 @@ type TIngredientsState = {
 	ingredientsMap: Record<string, TIngredient>;
 };
 
-const initialState: TIngredientsState = {
+export const initialState: TIngredientsState = {
 	loading: false,
 	error: null,
 	ingredients: [],
 	ingredientsMap: {},
 };
+
+export const errorText = 'unknown error';
 
 export const ingredientsSlice = createSlice({
 	name: 'ingredients',
@@ -32,7 +34,7 @@ export const ingredientsSlice = createSlice({
 			})
 			.addCase(loadIngredients.rejected, (state, action) => {
 				state.loading = false;
-				state.error = (action.error as Error)?.message || 'unknown error';
+				state.error = (action.error as Error)?.message || errorText;
 			})
 			.addCase(
 				loadIngredients.fulfilled,

@@ -1,6 +1,10 @@
-# React + Webpack
+# Учебный проект React Burger
 
-## Основные команды для работы
+Ссылка на GitHub Pages: https://kiisya1.github.io/react-burger/
+
+Использованные технологии: React + Webpack
+
+### Основные команды для работы
 * Установка - `npm i`
 * Запуск локального сервера - `npm start`
 * Сборка проекта - `npm run build`

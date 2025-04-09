@@ -29,14 +29,15 @@ export const Modal = (props: TModal): React.JSX.Element => {
 
 	return createPortal(
 		<>
-			<div className={`${styles.modal} p-10`}>
+			<div className={`${styles.modal} p-10`} data-testid='modal'>
 				<header className={styles.modal__header}>
 					<h2 className={`text ${props.titleStyle}`}>{props.title}</h2>
-					<CloseIcon
+					<div
+						onClick={() => props.onClose()}
 						className={styles.modal__button}
-						onClick={props.onClose}
-						type='primary'
-					/>
+						data-testid='modal-close'>
+						<CloseIcon type='primary' />
+					</div>
 				</header>
 				{props.children}
 			</div>

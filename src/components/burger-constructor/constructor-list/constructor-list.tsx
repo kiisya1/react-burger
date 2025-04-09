@@ -88,12 +88,14 @@ export const ConstructorList = (): React.JSX.Element => {
 				<div
 					ref={bunTargetTop}
 					style={{ borderColor }}
+					data-testid='bun-container'
 					className={`${styles.constructor_list__bun} ${styles.top} ${styles.constructor_list__item} text text_type_main-default`}>
 					Выберите булки
 				</div>
 			)}
 			<ul
 				ref={ingredientTarget}
+				data-testid='ingredients-container'
 				className={`${styles.constructor_list__list} custom-scroll`}>
 				{ingredients.length ? (
 					ingredients.map((item: TConstructorIngredient, index: number) => {

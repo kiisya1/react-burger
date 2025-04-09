@@ -50,7 +50,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 		<section className={`${styles.burger_constructor} pl-4`}>
 			<ConstructorList />
 			<section className={`${styles.burger_constructor__total}`}>
-				<p className='text text_type_digits-medium'>
+				<p className='text text_type_digits-medium' data-testid='constructor-price'>
 					{orderPrice} <CurrencyIcon type='primary' />
 				</p>
 				<Button
