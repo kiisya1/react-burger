@@ -60,7 +60,7 @@
 		"stylelint:fix": "stylelint \"src/**/*.css\" --fix",
 		"lint": "eslint --fix \"./src/**/*.{js,jsx,ts,tsx,json}\"",
 		"format": "prettier --write \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\" --ignore-path ./.prettierignore",
-		"test": "npm run stylelint:fix && yarn lint && yarn format",
+		"test": "yarn stylelint:fix && yarn lint && yarn format",
 		"jest": "jest",
 		"cy:open": "cypress open",
 		"prepare": "husky install",
